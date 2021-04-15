@@ -1,54 +1,94 @@
 package by.golik.dealerstat.model;
 
-import lombok.Getter;
-import lombok.Setter;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Enumerated;
-import javax.persistence.Table;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.sql.Date;
+import javax.persistence.*;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Nikita Golik
  */
 @Entity
-@Table(name = "users")
-@Getter
-@Setter
+@Table(name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = "username"),
+                @UniqueConstraint(columnNames = "email")
+        })
+public class User {
 
-public class User extends AbstractEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String username;
+
+    private String email;
+
+    private String password;
+
+    private Date createdAt;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private Set<Role> roles = new HashSet<>();
 
     public User() {
     }
 
-    @Size(min = 2, max = 32)
-    @Column(name = "first_name")
-    @NotNull
-    private String firstName;
+    public User(String username, String email, String password, Date createdAt) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+        this.createdAt = createdAt;
+    }
 
-    @Size(min = 2, max = 32)
-    @Column(name = "last_name")
-    @NotNull
-    private String lastName;
+    public Long getId() {
+        return id;
+    }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    @Size(min = 8, max = 50)
-    @NotNull
-    private String password;
+    public String getUsername() {
+        return username;
+    }
 
-    @NotNull
-    @Email
-    private String email;
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-    @Column(name = "created_at")
-    private Date createdAt;
+    public String getEmail() {
+        return email;
+    }
 
-    @Column(name = "role")
-    @Enumerated
-    private Role role;
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public Date getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Date createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Set<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<Role> roles) {
+        this.roles = roles;
+    }
 }

@@ -18,5 +18,5 @@ public abstract class AbstractEntity {
     @Getter
     @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected int id;
+    protected Long id;
 }
