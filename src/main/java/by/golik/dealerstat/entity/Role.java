@@ -1,4 +1,4 @@
-package by.golik.dealerstat.model;
+package by.golik.dealerstat.entity;
 
 import javax.persistence.*;
 
@@ -6,7 +6,6 @@ import javax.persistence.*;
  * @author Nikita Golik
  */
 @Entity
-@Table(name = "roles")
 public class Role {
 
     @Id

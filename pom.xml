@@ -168,6 +168,13 @@
       <version>0.10.7</version>
       <scope>runtime</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.apache.camel/camel-mustache -->
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-mustache</artifactId>
+      <version>3.9.0</version>
+    </dependency>
+
 
 
 
