@@ -1,13 +1,14 @@
 package by.golik.dealerstat.service.impl;
 
 import by.golik.dealerstat.entity.Comment;
-import by.golik.dealerstat.repository.CommentRepo;
+import by.golik.dealerstat.repository.CommentRepository;
 import by.golik.dealerstat.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Nikita Golik
@@ -16,35 +17,50 @@ import java.util.List;
 @Transactional
 public class CommentServiceImpl implements CommentService {
 
-    private CommentRepo commentRepo;
+    CommentRepository commentRepository;
 
     @Autowired
-    public void setCommentRepo(CommentRepo commentRepo) {
-        this.commentRepo = commentRepo;
+    public void setCommentRepository(CommentRepository commentRepository) {
+        this.commentRepository = commentRepository;
     }
 
     @Override
-    public void addComment(Comment comment) {
-        this.commentRepo.addComment(comment);
+    public Optional<Comment> findByCommentId(Long id) {
+        return commentRepository.findById(id);
     }
 
     @Override
-    public void updateComment(Comment comment) {
-        this.commentRepo.updateComment(comment);
+    public List<Comment> findAllComments() {
+        return commentRepository.findAll();
     }
 
     @Override
-    public void removeComment(Integer id) {
-        this.commentRepo.removeComment(id);
+    public void saveComment(Comment comment) {
+        commentRepository.save(comment);
     }
 
     @Override
-    public Comment getCommentById(Integer id) {
-        return this.commentRepo.getCommentById(id);
+    public void deleteCommentById(Long id) {
+        commentRepository.deleteById(id);
     }
 
     @Override
-    public List<Comment> listComments() {
-        return this.commentRepo.listComments();
+    public List<Comment> findByAuthorId(Long id) {
+        return commentRepository.findAllByAuthor_Id(id);
+    }
+
+    @Override
+    public void saveWithGameObjectId(Comment comment, Long authorId) {
+        commentRepository.save(comment);
+    }
+
+    @Override
+    public List<Comment> findByTraderId(Long id) {
+        return commentRepository.findAllByGameObject_Owner_Id(id);
+    }
+
+    @Override
+    public List<Comment> findByGameObjectId(Long id) {
+        return commentRepository.findAllByGameObject_Id(id);
     }
 }

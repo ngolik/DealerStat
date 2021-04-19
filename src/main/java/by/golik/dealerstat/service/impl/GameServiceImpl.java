@@ -1,13 +1,14 @@
 package by.golik.dealerstat.service.impl;
 
 import by.golik.dealerstat.entity.Game;
-import by.golik.dealerstat.repository.GameRepo;
+import by.golik.dealerstat.repository.GameRepository;
 import by.golik.dealerstat.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Nikita Golik
@@ -16,35 +17,30 @@ import java.util.List;
 @Transactional
 public class GameServiceImpl implements GameService {
 
-    private GameRepo gameRepo;
+    GameRepository gameRepository;
 
     @Autowired
-    public void setGameRepo(GameRepo gameRepo) {
-        this.gameRepo = gameRepo;
+    public void setGameRepository(GameRepository gameRepository) {
+        this.gameRepository = gameRepository;
     }
 
     @Override
-    public void addGame(Game game) {
-        this.gameRepo.addGame(game);
+    public Optional<Game> findByGameId(Long id) {
+        return gameRepository.findById(id);
     }
 
     @Override
-    public void updateGame(Game game) {
-        this.gameRepo.updateGame(game);
+    public List<Game> findAllGames() {
+        return gameRepository.findAll();
     }
 
     @Override
-    public void removeGame(Integer id) {
-        this.gameRepo.removeGame(id);
+    public void saveGame(Game game) {
+        gameRepository.save(game);
     }
 
     @Override
-    public Game getGameById(Integer id) {
-        return this.gameRepo.getGameById(id);
-    }
-
-    @Override
-    public List<Game> listGames() {
-        return this.gameRepo.listGames();
+    public void deleteGameById(Long id) {
+        gameRepository.deleteById(id);
     }
 }

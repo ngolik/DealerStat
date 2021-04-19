@@ -19,7 +19,6 @@
     <maven.compiler.target>1.7</maven.compiler.target>
     <spring.version>5.3.5</spring.version>
     <hibernate.version>5.4.30.Final</hibernate.version>
-    <lombok.version>1.18.20</lombok.version>
 
   </properties>
 
@@ -36,14 +35,6 @@
       <artifactId>spring-context</artifactId>
       <version>${spring.version}</version>
     </dependency>
-
-    <!-- https://mvnrepository.com/artifact/org.springframework/spring-core -->
-    <dependency>
-      <groupId>org.springframework</groupId>
-      <artifactId>spring-core</artifactId>
-      <version>${spring.version}</version>
-    </dependency>
-
 
     <dependency>
       <groupId>org.springframework</groupId>
@@ -107,6 +98,12 @@
       <version>1.18.20</version>
       <scope>provided</scope>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+    <dependency>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <artifactId>jackson-databind</artifactId>
+      <version>2.12.3</version>
+    </dependency>
     <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
     <dependency>
       <groupId>javax.validation</groupId>
@@ -119,62 +116,6 @@
       <artifactId>hibernate-validator</artifactId>
       <version>7.0.1.Final</version>
     </dependency>
-
-    <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>2.12.2</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-core -->
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-core</artifactId>
-      <version>5.4.6</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-web -->
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-web</artifactId>
-      <version>5.4.6</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-config -->
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-config</artifactId>
-      <version>5.4.6</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto -->
-    <dependency>
-      <groupId>org.springframework.security</groupId>
-      <artifactId>spring-security-crypto</artifactId>
-      <version>5.4.6</version>
-    </dependency>
-
-    <dependency>
-      <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt-api</artifactId>
-      <version>0.10.7</version>
-    </dependency>
-    <dependency>
-      <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt-impl</artifactId>
-      <version>0.10.7</version>
-      <scope>runtime</scope>
-    </dependency>
-    <dependency>
-      <groupId>io.jsonwebtoken</groupId>
-      <artifactId>jjwt-jackson</artifactId>
-      <version>0.10.7</version>
-      <scope>runtime</scope>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.apache.camel/camel-mustache -->
-    <dependency>
-      <groupId>org.apache.camel</groupId>
-      <artifactId>camel-mustache</artifactId>
-      <version>3.9.0</version>
-    </dependency>
-
 
 
 

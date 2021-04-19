@@ -1,60 +1,73 @@
 package by.golik.dealerstat.controller;
 
-import by.golik.dealerstat.entity.Comment;
 import by.golik.dealerstat.entity.Game;
-import by.golik.dealerstat.service.CommentService;
 import by.golik.dealerstat.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
+
+import java.util.List;
 
 /**
  * @author Nikita Golik
  */
 @Controller
 public class GameController {
-    private final GameService gameService;
+    GameService gameService;
 
     @Autowired
-    public GameController(GameService gameService) {
+    public void setGameService(GameService gameService) {
         this.gameService = gameService;
     }
 
-    @GetMapping(value = "games")
-    public String listGames(Model model){
-        model.addAttribute("game", new Game());
-        model.addAttribute("listGames", this.gameService.listGames());
-        return "games";
+    @RequestMapping(value = "/games", method = RequestMethod.GET)
+    public ModelAndView allGames() {
+        List<Game> games = gameService.allGames();
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("games");
+        modelAndView.addObject("gamesList", games);
+        return modelAndView;
     }
 
-
-    @PostMapping(value = "/games/add")
-    public String addGame(@ModelAttribute("game") Game game){
-
-        if(game.getId() == 0){
-            gameService.addGame(game);
-        }else {
-            gameService.updateGame(game);
-        }
-
-        return "redirect:/games";
+    @RequestMapping(value = "/games/add", method = RequestMethod.GET)
+    public ModelAndView addPage() {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("editPage");
+        return modelAndView;
     }
 
-
-    @RequestMapping("/games/remove/{id}")
-    public String removeGame(@PathVariable("id") int id){
-        gameService.removeGame(id);
-
-        return "redirect:/games";
+    @RequestMapping(value = "/games/add", method = RequestMethod.POST)
+    public ModelAndView addGame(@ModelAttribute("game") Game game) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/games");
+        gameService.addGame(game);
+        return modelAndView;
     }
 
+    @RequestMapping(value = "/games/edit/{id}", method = RequestMethod.GET)
+    public ModelAndView editPage(@PathVariable("id") int id) {
+        Game game = gameService.getById(id);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("editPage");
+        modelAndView.addObject("game", game);
+        return modelAndView;
+    }
 
-    @RequestMapping("/games/edit/{id}")
-    public String editGame(@PathVariable("id") int id, Model model){
-        model.addAttribute("game", gameService.getGameById(id));
-        model.addAttribute("listGames", gameService.listGames());
+    @RequestMapping(value = "/games/edit", method = RequestMethod.POST)
+    public ModelAndView editGame(@ModelAttribute("game") Game game) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/games");
+        gameService.editGame(game);
+        return modelAndView;
+    }
 
-        return "games";
+    @RequestMapping(value = "/games/delete/{id}", method = RequestMethod.GET)
+    public ModelAndView deleteGame(@PathVariable("id") int id) {
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("redirect:/games");
+        Game game = gameService.getById(id);
+        gameService.deleteGame(game);
+        return modelAndView;
     }
 }

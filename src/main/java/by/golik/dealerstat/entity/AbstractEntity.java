@@ -2,22 +2,17 @@ package by.golik.dealerstat.entity;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
 
-import javax.persistence.*;
-import java.util.Calendar;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 
 /**
  * @author Nikita Golik
  */
 @MappedSuperclass
-public abstract class AbstractEntity {
-
-    @CreatedDate
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(updatable = false)
-    protected Calendar createdAt;
-
+public class AbstractEntity {
     @Id
     @Getter
     @Setter

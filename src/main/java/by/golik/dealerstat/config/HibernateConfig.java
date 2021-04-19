@@ -7,6 +7,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -21,6 +22,7 @@ import java.util.Properties;
 @ComponentScan("by.golik.dealerstat")
 @EnableTransactionManagement
 @PropertySource(value = "classpath:db.properties")
+@EnableJpaRepositories("by.golik.dealerstat.repository")
 public class HibernateConfig {
     private Environment environment;
 
@@ -50,7 +52,7 @@ public class HibernateConfig {
     public LocalSessionFactoryBean sessionFactory() {
         LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("by.golik.entity");
+        sessionFactory.setPackagesToScan("by.golik.dealerstat.entity");
         sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
     }

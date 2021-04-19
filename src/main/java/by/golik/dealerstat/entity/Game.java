@@ -1,40 +1,30 @@
 package by.golik.dealerstat.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
+import java.util.List;
 
 /**
  * @author Nikita Golik
  */
 @Entity
 @Table(name = "game")
-public class Game extends AbstractEntity {
-    public Game() {
-    }
-
-    @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Getter
+@Setter
+@NoArgsConstructor
+public class Game  extends AbstractEntity {
 
     @Column(unique = true)
     private String name;
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @OneToMany (mappedBy = "game")
+    @LazyCollection(LazyCollectionOption.FALSE)
+    @JsonManagedReference(value = "game-gameObject")
+    private List<GameObject> gameObjects;
 }
