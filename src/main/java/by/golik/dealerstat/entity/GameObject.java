@@ -50,7 +50,7 @@ public class GameObject extends AbstractEntity {
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "trader_id")
     @JsonBackReference (value = "user-gameObject")
     private User owner;
 

@@ -17,6 +17,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/games")
 public class GameController {
+
     private final GameService gameService;
 
     @Autowired
@@ -68,5 +69,4 @@ public class GameController {
         }
         return new ResponseEntity<>(games, HttpStatus.OK);
     }
-
 }
