@@ -1,6 +1,7 @@
 package by.golik.dealerstat.entity;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,6 +19,7 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
+@JsonSerialize
 public class Game  extends AbstractEntity {
 
     @Column(unique = true)

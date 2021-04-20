@@ -1,9 +1,7 @@
 package by.golik.dealerstat.controller;
 
-import by.golik.dealerstat.entity.Game;
 import by.golik.dealerstat.entity.GameObject;
 import by.golik.dealerstat.service.GameObjectService;
-import by.golik.dealerstat.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

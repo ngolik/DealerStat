@@ -23,6 +23,7 @@ import java.util.Properties;
 /**
  * @author Nikita Golik
  */
+
 @Configuration
 
 @EnableTransactionManagement
