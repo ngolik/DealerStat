@@ -3,71 +3,70 @@ package by.golik.dealerstat.controller;
 import by.golik.dealerstat.entity.Game;
 import by.golik.dealerstat.service.GameService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
 
 /**
  * @author Nikita Golik
  */
-@Controller
+@RestController
+@RequestMapping("/games")
 public class GameController {
-    GameService gameService;
+    private final GameService gameService;
 
     @Autowired
-    public void setGameService(GameService gameService) {
+    public GameController(GameService gameService) {
         this.gameService = gameService;
     }
 
-    @RequestMapping(value = "/games", method = RequestMethod.GET)
-    public ModelAndView allGames() {
-        List<Game> games = gameService.allGames();
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("games");
-        modelAndView.addObject("gamesList", games);
-        return modelAndView;
+
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Game> get(@PathVariable Long id) {
+        if (!this.gameService.findByGameId(id).isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        Game game = this.gameService.findByGameId(id).get();
+        return new ResponseEntity<>(game, HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/games/add", method = RequestMethod.GET)
-    public ModelAndView addPage() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("editPage");
-        return modelAndView;
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<Game>> getAll() {
+        List<Game> games = this.gameService.findAllGames();
+        return generateListResponse(games);
     }
 
-    @RequestMapping(value = "/games/add", method = RequestMethod.POST)
-    public ModelAndView addGame(@ModelAttribute("game") Game game) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/games");
-        gameService.addGame(game);
-        return modelAndView;
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Game> post(@RequestBody Game game) {
+        HttpHeaders headers = new HttpHeaders();
+        if (game == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        this.gameService.saveGame(game);
+        return new ResponseEntity<>(game, headers, HttpStatus.CREATED);
     }
 
-    @RequestMapping(value = "/games/edit/{id}", method = RequestMethod.GET)
-    public ModelAndView editPage(@PathVariable("id") int id) {
-        Game game = gameService.getById(id);
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("editPage");
-        modelAndView.addObject("game", game);
-        return modelAndView;
+    @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Game> put(@RequestBody Game game, @PathVariable Long id) {
+        return new ResponseEntity<>(gameService.update(game, id));
     }
 
-    @RequestMapping(value = "/games/edit", method = RequestMethod.POST)
-    public ModelAndView editGame(@ModelAttribute("game") Game game) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/games");
-        gameService.editGame(game);
-        return modelAndView;
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Game> delete(@PathVariable Long id) {
+        gameService.deleteGameById(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @RequestMapping(value = "/games/delete/{id}", method = RequestMethod.GET)
-    public ModelAndView deleteGame(@PathVariable("id") int id) {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/games");
-        Game game = gameService.getById(id);
-        gameService.deleteGame(game);
-        return modelAndView;
+    protected ResponseEntity<List<Game>> generateListResponse(List<Game> games) {
+        if (games.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(games, HttpStatus.OK);
     }
+
 }

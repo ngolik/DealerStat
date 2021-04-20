@@ -4,6 +4,7 @@ import by.golik.dealerstat.entity.User;
 import by.golik.dealerstat.repository.UserRepository;
 import by.golik.dealerstat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -41,5 +42,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUserById(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public HttpStatus update(User user, Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (!userOptional.isPresent()) {
+            return HttpStatus.NOT_FOUND;
+        }
+        user.setId(id);
+        userRepository.save(user);
+        return HttpStatus.OK;
     }
 }

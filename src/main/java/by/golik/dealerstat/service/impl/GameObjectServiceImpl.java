@@ -1,9 +1,11 @@
 package by.golik.dealerstat.service.impl;
 
+import by.golik.dealerstat.entity.Game;
 import by.golik.dealerstat.entity.GameObject;
 import by.golik.dealerstat.repository.GameObjectRepository;
 import by.golik.dealerstat.service.GameObjectService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -42,6 +44,17 @@ public class GameObjectServiceImpl implements GameObjectService {
     @Override
     public void deleteGameObjectById(Long id) {
         gameObjectRepository.deleteById(id);
+    }
+
+    @Override
+    public HttpStatus update(GameObject gameObject, Long id) {
+        Optional<GameObject> gameObjectOptional = gameObjectRepository.findById(id);
+        if (!gameObjectOptional.isPresent()) {
+            return HttpStatus.NOT_FOUND;
+        }
+        gameObject.setId(id);
+        gameObjectRepository.save(gameObject);
+        return HttpStatus.OK;
     }
 
     @Override
