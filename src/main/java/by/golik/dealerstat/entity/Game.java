@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -15,18 +16,27 @@ import java.util.List;
  * @author Nikita Golik
  */
 @Entity
-@Table(name = "game")
 @Getter
 @Setter
 @NoArgsConstructor
-@JsonSerialize
-public class Game  extends AbstractEntity {
+public class Game {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     @Column(unique = true)
     private String name;
 
-    @OneToMany (mappedBy = "game")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonManagedReference(value = "game-gameObject")
-    private List<GameObject> gameObjects;
+    @ManyToMany
+    @ToString.Exclude
+    private List<GameObject> gameobjects;
+
+    @ManyToMany
+    @ToString.Exclude
+    private List<UnconfirmedGameObject> unconfirmedGameObjects;
+
+    public Game(String name) {
+        this.name = name;
+    }
 }

@@ -1,12 +1,11 @@
 package by.golik.dealerstat.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.util.Calendar;
 
 /**
  * @author Nikita Golik
@@ -14,27 +13,35 @@ import java.util.Calendar;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "comment")
 @Entity
-public class Comment extends AbstractEntity {
+public class Comment extends AbstractComment {
 
-    @Column
-    private String message;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @Column
-    private Calendar createdAt;
-
-    @Column
-    private int rate;
+    @Setter
+    @Column(nullable = false)
+    private boolean approved;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
-    @JsonBackReference(value = "user-comment")
+    @JoinColumn(nullable = false)
+    private GameObject gameobject;
+
+    @ManyToOne
+    @JoinColumn(nullable = false)
     private User author;
 
-    @ManyToOne (cascade=CascadeType.ALL)
-    @JoinColumn(name="gameObject_id")
-    @JsonBackReference (value = "gameObject-comment")
-    private GameObject gameObject;
+    @OneToOne(mappedBy = "comment", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
+    private UnconfirmedComment unconfirmedComment;
+
+    public Comment(String message, int rate, boolean approved,
+                   GameObject gameobject, User user) {
+        super(message, rate);
+        this.approved = approved;
+        this.gameobject = gameobject;
+        this.author = user;
+    }
 
 }

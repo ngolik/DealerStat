@@ -1,10 +1,13 @@
 package by.golik.dealerstat.repository;
 
 import by.golik.dealerstat.entity.GameObject;
+import by.golik.dealerstat.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Nikita Golik
@@ -12,8 +15,14 @@ import java.util.List;
 @Repository
 public interface GameObjectRepository extends JpaRepository<GameObject, Long> {
 
-    List<GameObject> findAllByOwner_Id(Long id);
-    List<GameObject> findAllByGame_Id(Long Id);
-    List<GameObject> findAllByGame_Name(String name);
+    Optional<GameObject> findByIdAndApprovedTrue(long id);
+
+//    @Query("select g from GameObject g where g.status" +
+//            "= by.golik.dealerstat.entity.Status.AVAILABLE and g.approved=true")
+//    List<GameObject> findAllByStatusIsAvailable();
+
+    List<GameObject> findAllByApprovedIsTrue();
+
+    List<GameObject> findAllByAuthor(User author);
 
 }

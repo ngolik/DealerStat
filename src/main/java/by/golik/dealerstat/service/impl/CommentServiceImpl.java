@@ -1,14 +1,19 @@
 package by.golik.dealerstat.service.impl;
 
 import by.golik.dealerstat.entity.Comment;
-import by.golik.dealerstat.entity.Game;
+import by.golik.dealerstat.entity.GameObject;
+import by.golik.dealerstat.entity.UnconfirmedComment;
+import by.golik.dealerstat.entity.User;
 import by.golik.dealerstat.repository.CommentRepository;
+import by.golik.dealerstat.repository.UnconfirmedCommentRepository;
 import by.golik.dealerstat.service.CommentService;
+import by.golik.dealerstat.service.dto.CommentDTO;
+import by.golik.dealerstat.service.util.Mapper;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
@@ -17,63 +22,106 @@ import java.util.Optional;
  */
 @Service
 @Transactional
+@Log4j2
 public class CommentServiceImpl implements CommentService {
 
-    CommentRepository commentRepository;
+    private final CommentRepository commentRepository;
+    private final UnconfirmedCommentRepository unconfirmedCommentRepository;
 
     @Autowired
-    public void setCommentRepository(CommentRepository commentRepository) {
+    public CommentServiceImpl(CommentRepository commentRepository,
+                              UnconfirmedCommentRepository unconfirmedCommentRepository) {
         this.commentRepository = commentRepository;
+        this.unconfirmedCommentRepository = unconfirmedCommentRepository;
     }
 
     @Override
-    public Optional<Comment> findByCommentId(Long id) {
-        return commentRepository.findById(id);
-    }
-
-    @Override
-    public List<Comment> findAllComments() {
-        return commentRepository.findAll();
-    }
-
-    @Override
-    public void saveComment(Comment comment) {
-        commentRepository.save(comment);
-    }
-
-    @Override
-    public void deleteCommentById(Long id) {
-        commentRepository.deleteById(id);
-    }
-
-    @Override
-    public HttpStatus update(Comment comment, Long id) {
-        Optional<Comment> commentOptional = commentRepository.findById(id);
-        if (!commentOptional.isPresent()) {
-            return HttpStatus.NOT_FOUND;
+    public void createComment(Comment comment, GameObject gameObject, User user) {
+        if (commentRepository.existsByAuthorAndGameobject(user, gameObject)) {
+            log.info("Comment " + comment + " already exist!");
+//            throw new ResourceAlreadyExistException(
+//                    "Comment with this author and post already exist!");
         }
-        comment.setId(id);
         commentRepository.save(comment);
-        return HttpStatus.OK;
+        log.info("Comment " + comment + " has been created.");
     }
 
     @Override
-    public List<Comment> findByAuthorId(Long id) {
-        return commentRepository.findAllByAuthor_Id(id);
-    }
-
-    @Override
-    public void saveWithGameObjectId(Comment comment, Long authorId) {
+    public void approveComment(Comment comment) {
+        comment.setApproved(true);
+        if (comment.getUnconfirmedComment() != null){
+            unconfirmedCommentRepository.delete(comment.getUnconfirmedComment());
+        }
+        log.info("Comment " + comment + " has been successfully approved.");
         commentRepository.save(comment);
     }
 
     @Override
-    public List<Comment> findByTraderId(Long id) {
-        return commentRepository.findAllByGameObject_Owner_Id(id);
+    @Transactional(readOnly = true)
+    public Comment getComment(long id) {
+        Optional<Comment> optionalComment = commentRepository
+                .findById(id);
+        Comment comment;
+
+        if (!optionalComment.isPresent()) {
+            log.info("Comment with  id " + id + " doesn't exist!");
+//            throw new ResourceNotFoundException("This comment doesn't exist!");
+        }
+        comment = optionalComment.get();
+        return comment;
     }
 
     @Override
-    public List<Comment> findByGameObjectId(Long id) {
-        return commentRepository.findAllByGameObject_Id(id);
+    public Comment getUnconfirmedComment(long id) {
+        Optional<Comment> optionalComment = commentRepository.findById(id);
+        Comment comment;
+
+        if (!optionalComment.isPresent()) {
+            log.info("Comment with  id " + id + " doesn't exist!");
+//            throw new ResourceNotFoundException("This comment doesn't exist!");
+        }
+        comment = optionalComment.get();
+        if (comment.getUnconfirmedComment() != null) {
+            UnconfirmedComment unconfirmedComment = comment.getUnconfirmedComment();
+
+            comment.setMessage(unconfirmedComment.getMessage());
+            comment.setRate(unconfirmedComment.getRate());
+        }
+        return comment;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Comment> getAllCommentsByGameObject(GameObject gameObject) {
+        return commentRepository.findAllByGameobject(gameObject);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Comment> getAllCommentsByAuthor(User user) {
+        return commentRepository.findAllByAuthor(user);
+    }
+
+    @Override
+    public void updateComment(Comment comment, CommentDTO commentDTO,
+                              boolean admin) {
+        if (admin || !comment.isApproved()) {
+            comment.setMessage(commentDTO.getMessage());
+            comment.setRate(commentDTO.getRate());
+        } else {
+            UnconfirmedComment unapprovedComment = Mapper
+                    .convertToUnconfirmedComment(commentDTO, comment);
+
+            unconfirmedCommentRepository.deleteByComment(comment);
+            unconfirmedCommentRepository.save(unapprovedComment);
+        }
+        log.info("Comment " + comment + " has been updated.");
+        commentRepository.save(comment);
+    }
+
+    @Override
+    public void deleteComment(Comment comment) {
+        log.info("Comment " + comment + " has been deleted.");
+        commentRepository.delete(comment);
     }
 }

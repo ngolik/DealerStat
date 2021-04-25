@@ -28,7 +28,7 @@ public class GameServiceImpl implements GameService {
 
     @Override
     public Game findByName(String name) {
-        return gameRepository.findByName(name);
+        return null;
     }
 
     @Override

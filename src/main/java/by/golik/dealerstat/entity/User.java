@@ -1,19 +1,15 @@
 package by.golik.dealerstat.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import lombok.ToString;
+import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -29,48 +25,65 @@ import java.util.List;
 @NoArgsConstructor
 public class User extends AbstractEntity implements UserDetails {
 
-    @Size(min=3, max=50)
-    @Column(unique = true)
-    @NotNull
-    private String name;
+    private String firstName;
 
-    @Size(min=8, max=20)
-    @NotNull
+    private String lastName;
+
+    @Column(nullable = false)
+    @ToString.Exclude
     private String password;
 
-    private String password2;
-
+    @NaturalId
     private String email;
 
-    @Column (name = "created_at")
-    private Date createdAt;
+    @Column(nullable = false)
+    private boolean enabled;
 
-    private String activationCode;
+    @Transient
+    private Double rate;
 
-    @Column (name = "role")
-    @Enumerated(EnumType.STRING)
+    @ManyToOne
+    @JoinColumn(nullable = false)
     private Role role;
 
-    @OneToMany (mappedBy = "owner")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonManagedReference(value = "user-gameObject")
-    List<GameObject> gameObjects;
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
+    private List<GameObject> gameObjects;
 
-    @OneToMany (mappedBy = "author")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonManagedReference(value = "user-comment")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
     private List<Comment> comments;
+
+    @Setter
+    @ToString.Exclude
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private Token token;
+
+    @Setter
+    @ToString.Exclude
+    @OneToOne(mappedBy = "user", cascade = CascadeType.REMOVE)
+    private ReplyCode replyCode;
+
+
+    public User(String firstName, String lastName, String password,
+                String email, Role role) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.password = password;
+        this.email = email;
+        this.role = role;
+    }
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        ArrayList<Role> roles = new ArrayList<Role>();
-        roles.add(role);
-        return roles;
+        ArrayList<Role> list = new ArrayList<Role>();
+        list.add(role);
+        return list;
     }
 
     @Override
     public String getUsername() {
-        return name;
+        return email;
     }
 
     @Override
@@ -88,8 +101,4 @@ public class User extends AbstractEntity implements UserDetails {
         return true;
     }
 
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

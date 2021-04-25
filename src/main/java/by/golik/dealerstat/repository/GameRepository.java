@@ -2,7 +2,11 @@ package by.golik.dealerstat.repository;
 
 import by.golik.dealerstat.entity.Game;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+
+import java.util.Optional;
 
 /**
  * @author Nikita Golik
@@ -10,6 +14,12 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface GameRepository extends JpaRepository<Game, Long> {
 
-    Game findByName(String name);
+    Optional<Game> findByName(String name);
+
+    @Modifying
+    @Query(nativeQuery = true, value = "delete from game g where \n" +
+            "not exists(select * from object_game_games where game_id = g.id) \n" +
+            "and not exists(select * from unconfirmed_gameobject_games where game_id = g.id)")
+    void deleteAllUnusedGames();
 
 }

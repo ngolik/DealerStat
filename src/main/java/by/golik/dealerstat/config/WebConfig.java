@@ -74,7 +74,9 @@ public class WebConfig implements WebMvcConfigurer {
         properties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         properties.put("hibernate.show_sql", environment.getRequiredProperty("hibernate.show_sql"));
         properties.put("hibernate.format_sql", environment.getRequiredProperty("hibernate.format_sql"));
+        properties.put("spring.datasource.type", environment.getRequiredProperty("spring.datasource.type"));
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
+
 
         return properties;
     }

@@ -1,24 +1,28 @@
 package by.golik.dealerstat.service;
 
+import by.golik.dealerstat.entity.Game;
 import by.golik.dealerstat.entity.GameObject;
 import by.golik.dealerstat.entity.User;
-import org.springframework.http.HttpStatus;
+import by.golik.dealerstat.service.dto.GameDTO;
+import by.golik.dealerstat.service.dto.GameObjectDTO;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Nikita Golik
  */
 public interface GameObjectService {
 
-    public Optional<GameObject> findByGameObjectId(Long id);
-    public List<GameObject> findAllGameObjects();
-    public void saveGameObject(GameObject gameObject);
-    public void deleteGameObjectById(Long id);
-    HttpStatus update(GameObject gameObject, Long id);
-
-    List<GameObject> findAllByOwner_Id(Long id);
-    List<GameObject> findAllByGame_Id(Long id);
-    List<GameObject> findAllByGame_Name(String name);
+    void createGameObject(GameObject gameObject);
+    void approveGameObject(GameObject gameObject);
+    GameObject getGameObject(long id);
+    GameObject getUnconfirmedGameObject(long id);
+    List<GameObject> getAllMyGameObjects(User user);
+    List<GameObject> getAllGameObjects();
+//    List<GameObject> getAllAvailableGameObjects();
+    List<Game> getAllGames();
+    List<Game> getGamesByGameDTOS(List<GameDTO> gameDTOS);
+    List<Long> getGameIdByName(String[] names);
+    void updateGameObject(GameObject gameObject, GameObjectDTO gameObjectDTO, boolean admin);
+    void deleteGameObject(GameObject gameObject);
 }

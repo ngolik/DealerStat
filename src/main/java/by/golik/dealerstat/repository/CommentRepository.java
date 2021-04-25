@@ -1,10 +1,13 @@
 package by.golik.dealerstat.repository;
 
 import by.golik.dealerstat.entity.Comment;
+import by.golik.dealerstat.entity.GameObject;
+import by.golik.dealerstat.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Nikita Golik
@@ -12,8 +15,9 @@ import java.util.List;
 @Repository
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    public List<Comment> findAllByAuthor_Id(Long Id);
-    public List<Comment> findAllByGameObject_Id(Long Id);
-    public List<Comment> findAllByGameObject_Owner_Id(Long id);
+    boolean existsByAuthorAndGameobject(User author, GameObject gameobject);
+    Optional<Comment> findByIdAndApproved(Long id, boolean approved);
+    List<Comment> findAllByGameobject(GameObject gameobject);
+    List<Comment> findAllByAuthor(User author);
 
 }

@@ -3,6 +3,7 @@ package by.golik.dealerstat.service;
 import by.golik.dealerstat.entity.Comment;
 import by.golik.dealerstat.entity.GameObject;
 import by.golik.dealerstat.entity.User;
+import by.golik.dealerstat.service.dto.CommentDTO;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
@@ -13,15 +14,13 @@ import java.util.Optional;
  */
 public interface CommentService {
 
-    public Optional<Comment> findByCommentId(Long id);
-    public List<Comment> findAllComments();
-    public void saveComment(Comment comment);
-    public void deleteCommentById(Long id);
-    HttpStatus update(Comment comment, Long id);
-
-    public List<Comment> findByAuthorId(Long id);
-    public void saveWithGameObjectId(Comment comment, Long authorId);
-    public List<Comment> findByTraderId(Long id);
-    public List<Comment> findByGameObjectId(Long id);
+    void createComment(Comment comment, GameObject gameObject, User user);
+    void approveComment(Comment comment);
+    Comment getComment(long id);
+    Comment getUnconfirmedComment(long id);
+    List<Comment> getAllCommentsByGameObject(GameObject gameObject);
+    List<Comment> getAllCommentsByAuthor(User user);
+    void updateComment(Comment comment, CommentDTO commentDTO, boolean admin);
+    void deleteComment(Comment comment);
 
 }

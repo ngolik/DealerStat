@@ -1,15 +1,8 @@
 package by.golik.dealerstat.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
+import lombok.*;
 
 import javax.persistence.*;
-import java.sql.Date;
 import java.util.List;
 
 /**
@@ -20,38 +13,39 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class GameObject extends AbstractEntity {
+public class GameObject extends AbstractGameObject {
 
-    @Column
-    private String title;
+    @Setter
+    @Column(nullable = false)
+    private boolean approved;
 
-    @Column
-    private String text;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private User author;
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    @Setter
+    @OneToOne(mappedBy = "gameobject", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
+    private UnconfirmedGameObject unconfirmedGameObject;
 
-    @Column
-    private Date createdAt;
-
-    @Column
-    private Date updatedAt;
-
-    @OneToMany (mappedBy = "gameObject")
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JsonManagedReference(value = "gameObject-comment")
+    @OneToMany(mappedBy = "gameobject", cascade = CascadeType.REMOVE)
+    @ToString.Exclude
     private List<Comment> comments;
 
-    @ManyToOne
-    @JoinColumn(name = "game_id")
-    @JsonBackReference(value = "game-gameObject")
-    private Game game;
+    @Setter
+    @ManyToMany
+    @JoinTable(
+            joinColumns = @JoinColumn(name = "gameobject_id"),
+            inverseJoinColumns = @JoinColumn(name = "game_id")
+    )
+    private List<Game> games;
 
-    @ManyToOne
-    @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinColumn(name = "trader_id")
-    @JsonBackReference (value = "user-gameObject")
-    private User owner;
-
+    @Builder
+    public GameObject(String title, String text, Status status, boolean approved,
+                User user, List<Game> games) {
+        super(title, text, status);
+        this.approved = approved;
+        this.author = user;
+        this.games = games;
+    }
 }

@@ -2,20 +2,32 @@ package by.golik.dealerstat.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
+import java.util.Calendar;
 
 /**
  * @author Nikita Golik
  */
+@Getter
+@Setter
 @MappedSuperclass
-public class AbstractEntity {
+@EntityListeners(AuditingEntityListener.class)
+public abstract class AbstractEntity {
+
     @Id
-    @Getter
-    @Setter
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
+
+    @CreatedDate
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(updatable = false)
+    protected Calendar createdAt;
+
+    @LastModifiedDate
+    @Temporal(TemporalType.TIMESTAMP)
+    protected Calendar updatedAt;
 }
