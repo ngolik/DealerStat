@@ -11,10 +11,13 @@ import java.util.List;
  * @author Nikita Golik
  */
 @Getter
-@Setter
 @Entity
 @NoArgsConstructor
 public class UnconfirmedGameObject extends AbstractGameObject {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     @OneToOne
     @JoinColumn(nullable = false)

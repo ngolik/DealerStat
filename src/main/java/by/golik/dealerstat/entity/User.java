@@ -18,12 +18,15 @@ import java.util.List;
  * @author Nikita Golik
  */
 @Entity
-@Table (name="user")
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 public class User extends AbstractEntity implements UserDetails {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     private String firstName;
 

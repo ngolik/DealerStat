@@ -18,10 +18,6 @@ import java.util.Calendar;
 @EntityListeners(AuditingEntityListener.class)
 public abstract class AbstractEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
-
     @CreatedDate
     @Temporal(TemporalType.TIMESTAMP)
     @Column(updatable = false)

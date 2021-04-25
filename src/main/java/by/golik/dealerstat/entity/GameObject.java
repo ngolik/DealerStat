@@ -1,6 +1,7 @@
 package by.golik.dealerstat.entity;
 
 import lombok.*;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.util.List;
@@ -9,11 +10,13 @@ import java.util.List;
  * @author Nikita Golik
  */
 @Entity
-@Table(name = "gameObject")
 @Getter
-@Setter
 @NoArgsConstructor
 public class GameObject extends AbstractGameObject {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
 
     @Setter
     @Column(nullable = false)
@@ -35,7 +38,7 @@ public class GameObject extends AbstractGameObject {
     @Setter
     @ManyToMany
     @JoinTable(
-            joinColumns = @JoinColumn(name = "gameobject_id"),
+            joinColumns = @JoinColumn(name = "gameobjects_id"),
             inverseJoinColumns = @JoinColumn(name = "game_id")
     )
     private List<Game> games;

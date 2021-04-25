@@ -18,7 +18,7 @@ public class Comment extends AbstractComment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    protected Long id;
 
     @Setter
     @Column(nullable = false)

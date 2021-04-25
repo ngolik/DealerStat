@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
 import java.util.List;
@@ -26,6 +27,7 @@ public class Game {
     private long id;
 
     @Column(unique = true)
+    @NaturalId
     private String name;
 
     @ManyToMany
