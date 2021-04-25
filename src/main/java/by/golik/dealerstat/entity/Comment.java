@@ -16,10 +16,6 @@ import javax.persistence.*;
 @Entity
 public class Comment extends AbstractComment {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    protected Long id;
-
     @Setter
     @Column(nullable = false)
     private boolean approved;

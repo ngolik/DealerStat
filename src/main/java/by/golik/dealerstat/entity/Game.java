@@ -24,7 +24,7 @@ public class Game {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    protected Long id;
 
     @Column(unique = true)
     @NaturalId

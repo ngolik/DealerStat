@@ -24,10 +24,6 @@ import java.util.List;
 @NoArgsConstructor
 public class User extends AbstractEntity implements UserDetails {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
     private String firstName;
 
     private String lastName;

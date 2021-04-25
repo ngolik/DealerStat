@@ -15,10 +15,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class UnconfirmedComment extends AbstractComment{
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
     @OneToOne
     @JoinColumn(nullable = false)
     private Comment comment;

@@ -15,10 +15,6 @@ import java.util.List;
 @NoArgsConstructor
 public class UnconfirmedGameObject extends AbstractGameObject {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
-
     @OneToOne
     @JoinColumn(nullable = false)
     private GameObject gameobject;

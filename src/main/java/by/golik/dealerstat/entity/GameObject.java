@@ -14,9 +14,6 @@ import java.util.List;
 @NoArgsConstructor
 public class GameObject extends AbstractGameObject {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
 
     @Setter
     @Column(nullable = false)
