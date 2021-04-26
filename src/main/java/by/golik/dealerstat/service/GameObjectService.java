@@ -18,15 +18,12 @@ public interface GameObjectService {
     void createGameObject(GameObject gameObject);
     void approveGameObject(GameObject gameObject);
     public GameObject findGameObjectById(long id);
-    public Optional<GameObject> findByGameObjectId(Long id);
     GameObject getUnconfirmedGameObject(long id);
     List<GameObject> getAllMyGameObjects(User user);
     List<GameObject> findAllGameObjects();
-
     List<Game> getAllGames();
     List<Game> getGamesByGameDTOS(List<GameDTO> gameDTOS);
-    List<Long> getGameIdByName(String[] names);
     void updateGameObject(GameObject gameObject, GameObjectDTO gameObjectDTO, boolean admin);
     void deleteGameObject(GameObject gameObject);
-    public void deleteGameById(Long id);
+    List<Long> getGameIdByName(String[] names);
 }

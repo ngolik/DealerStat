@@ -10,7 +10,6 @@ import by.golik.dealerstat.service.dto.GameObjectDTO;
 import by.golik.dealerstat.service.util.Mapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -142,28 +141,6 @@ public class GameObjectServiceImpl implements GameObjectService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Long> getGameIdByName(String[] names) {
-        List<Long> idList = new ArrayList<>();
-        boolean nonExist = false;
-
-        for (String name : names) {
-            Optional<Game> optionalGame = gameRepository.findByName(name);
-
-            if (optionalGame.isPresent() && optionalGame.get().getGameobjects() != null) {
-                idList.add(optionalGame.get().getId());
-            } else {
-                nonExist = true;
-            }
-        }
-        if (idList.isEmpty() && nonExist) {
-            return null;
-        } else {
-            return idList;
-        }
-    }
-
-    @Override
     public void updateGameObject(GameObject gameObject, GameObjectDTO gameObjectDTO, boolean admin) {
         List<Game> games = getGamesByGameDTOS(gameObjectDTO.getGames());
 
@@ -190,12 +167,24 @@ public class GameObjectServiceImpl implements GameObjectService {
     }
 
     @Override
-    public void deleteGameById(Long id) {
-        gameObjectRepository.deleteById(id);
-    }
+    @Transactional(readOnly = true)
+    public List<Long> getGameIdByName(String[] names) {
+        List<Long> idList = new ArrayList<>();
+        boolean nonExist = false;
 
-    @Override
-    public Optional<GameObject> findByGameObjectId(Long id) {
-        return Optional.empty();
+        for (String name: names) {
+            Optional<Game> optionalGame = gameRepository.findByName(name);
+
+            if (optionalGame.isPresent() && optionalGame.get().getGameobjects() != null) {
+                idList.add(optionalGame.get().getId());
+            } else {
+                nonExist = true;
+            }
+        }
+        if (idList.isEmpty() && nonExist) {
+            return null;
+        } else {
+            return idList;
+        }
     }
 }

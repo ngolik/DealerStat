@@ -48,7 +48,7 @@ public class Mapper {
                 Status.valueOf(gameObjectDTO.getStatus()), games, gameObject);
     }
 
-    public static GameObjectDTO convertToPostDTO(GameObject gameObject) {
+    public static GameObjectDTO convertToGameObjectDTO(GameObject gameObject) {
         List<GameDTO> gameDTOS = convertToListGameDTO(gameObject.getGames());
 
         return new GameObjectDTO().builder().id(gameObject.getId())
@@ -72,7 +72,7 @@ public class Mapper {
         List<GameObjectDTO> postDTOS = new ArrayList<>();
 
         for (GameObject gameObject: gameObjects) {
-            postDTOS.add(convertToPostDTO(gameObject));
+            postDTOS.add(convertToGameObjectDTO(gameObject));
         }
         return postDTOS;
     }

@@ -79,12 +79,14 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository,
-                           TokenRepository tokenRepository, ReplyCodeRepository replyCodeRepository, RoleRepository roleRepository,
+                           RoleRepository roleRepository,
+                           TokenRepository tokenRepository,
+                           ReplyCodeRepository replyCodeRepository,
                            BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.tokenRepository = tokenRepository;
         this.replyCodeRepository = replyCodeRepository;
-        this.roleRepository = roleRepository;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
@@ -269,38 +271,6 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAllNonReaders();
     }
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<User> getAllTradersByGames(List<Integer> idList) {
-//        return userRepository.findUserByGames(idList);
-//    }
-
-//    @Override
-//    public List<User> filterTraders(List<User> users, double max, double min,
-//                                    int skip, int limit) {
-//        for (User user: users) {
-//            calculateRating(user);
-//        }
-//        users = users.stream().filter(user -> user.getRate() != null)
-//                .filter(user -> user.getRate() >= min)
-//                .filter(user -> user.getRate() <= max)
-//                .sorted((user1, user2) -> {
-//                    if (user1.getRate() < user2.getRate()) {
-//                        return 1;
-//                    }
-//                    else {
-//                        return -1;
-//                    }
-//                }).collect(Collectors.toList());
-//        if (skip != 0 ) {
-//            users = users.stream().skip(skip).collect(Collectors.toList());
-//        }
-//        if (limit != 0) {
-//            users = users.stream().limit(limit).collect(Collectors.toList());
-//        }
-//        return users;
-//    }
-
     @Override
     public boolean isAdmin(User user) {
         return (user.getRole().getName().equals("ROLE_ADMIN"));
@@ -391,5 +361,18 @@ public class UserServiceImpl implements UserService {
             log.error("Email with text " + message + "wasn't sent!");
 //            throw new UnknownServerException();
         }
+    }
+
+    @Override
+    public void calculateRate(User user) {
+        if (!user.getRole().getName().equals("ROLE_ANON")) {
+//            user.setRate(userRepository.findRateByUser(user));
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<User> getAllTradersByGames(List<Integer> idList) {
+        return userRepository.findUserByGames(idList);
     }
 }

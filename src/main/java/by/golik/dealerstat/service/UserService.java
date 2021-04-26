@@ -23,12 +23,10 @@ public interface UserService extends UserDetailsService {
     List<User> getAllUsers();
     List<User> getAllAnons();
     List<User> getAllTraders();
-//    List<User> getAllTradersByGames(List<Integer> idList);
-//    List<User> filterTraders(List<User> users, double max,
-//                             double min, int skip, int limit);
     boolean isAdmin(User user);
     void updateUser(User user, UserDTO userDTO);
     void changeRole(User user, String roleName);
     void deleteUser(User user);
-//    void calculateRating(User user);
+    void calculateRate(User user);
+    List<User> getAllTradersByGames(List<Integer> idList);
 }

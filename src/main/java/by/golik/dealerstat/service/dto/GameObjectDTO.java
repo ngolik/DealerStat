@@ -27,7 +27,7 @@ public class GameObjectDTO {
     private String text;
 
     @NotBlank(message = "status shouldn't be empty")
-    @Pattern(regexp = "^PUBLIC$|^DRAFT$",
+    @Pattern(regexp = "^AVAILABLE$|^SOLD$",
             message = "status should be PUBLIC OR DRAFT")
     private String status;
 

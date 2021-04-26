@@ -3,9 +3,7 @@ package by.golik.dealerstat.controller;
 import by.golik.dealerstat.config.jwt.JwtProvider;
 import by.golik.dealerstat.entity.User;
 import by.golik.dealerstat.service.UserService;
-import by.golik.dealerstat.service.dto.EmailDTO;
-import by.golik.dealerstat.service.dto.NewPasswordDTO;
-import by.golik.dealerstat.service.dto.UserDTO;
+import by.golik.dealerstat.service.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,15 +33,15 @@ public class RegistrationController {
         userService.confirmUser(token);
     }
 
-//    @PostMapping
-//    @ResponseStatus(HttpStatus.OK)
-//    public ResponseEntity auth() {
-//        User user = userService.getByEmailAndPassword(request.getLogin(),
-//                request.getPassword());
-//        String token = jwtProvider.generateToken(user.getEmail());
-//
-//        return new AuthResponse(token);
-//    }
+    @PostMapping
+    @ResponseStatus(HttpStatus.OK)
+    public RegistrationResponse auth(@RequestBody @Valid RegistrationRequest request) throws Exception {
+        User user = userService.getByEmailAndPassword(request.getLogin(),
+                request.getPassword());
+        String token = jwtProvider.generateToken(user.getEmail());
+
+        return new RegistrationResponse(token);
+    }
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)

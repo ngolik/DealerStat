@@ -41,17 +41,6 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void createComment(Comment comment, GameObject gameObject, User user) {
-        if (commentRepository.existsByAuthorAndGameobject(user, gameObject)) {
-            log.info("Comment " + comment + " already exist!");
-//            throw new ResourceAlreadyExistException(
-//                    "Comment with this author and post already exist!");
-        }
-        commentRepository.save(comment);
-        log.info("Comment " + comment + " has been created.");
-    }
-
-    @Override
     public void approveComment(Comment comment) {
         comment.setApproved(true);
         if (comment.getUnconfirmedComment() != null){
@@ -93,11 +82,6 @@ public class CommentServiceImpl implements CommentService {
             comment.setRate(unconfirmedComment.getRate());
         }
         return comment;
-    }
-
-    @Override
-    public List<Comment> getAllCommentsByGameObject(Long id) {
-        return null;
     }
 
     @Override

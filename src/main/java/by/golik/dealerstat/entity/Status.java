@@ -5,5 +5,4 @@ package by.golik.dealerstat.entity;
  */
 public enum Status {
     SOLD, AVAILABLE
-
 }

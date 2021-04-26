@@ -1,11 +1,8 @@
 package by.golik.dealerstat.controller;
 
 import by.golik.dealerstat.entity.*;
-import by.golik.dealerstat.exception.NotEnoughRightException;
-import by.golik.dealerstat.service.CommentService;
 import by.golik.dealerstat.service.GameObjectService;
 import by.golik.dealerstat.service.UserService;
-import by.golik.dealerstat.service.dto.CommentDTO;
 import by.golik.dealerstat.service.dto.GameDTO;
 import by.golik.dealerstat.service.dto.GameObjectDTO;
 import by.golik.dealerstat.service.util.Mapper;
@@ -29,16 +26,12 @@ public class GameObjectController {
 
     private final GameObjectService gameObjectService;
 
-    private final CommentService commentService;
-
     private final UserService userService;
 
     @Autowired
-    public GameObjectController(GameObjectService gameObjectService, UserService userService,
-                                CommentService commentService) {
+    public GameObjectController(GameObjectService gameObjectService, UserService userService) {
         this.gameObjectService = gameObjectService;
         this.userService = userService;
-        this.commentService = commentService;
     }
 
     /**
@@ -80,7 +73,7 @@ public class GameObjectController {
         if (gameObject.getStatus().equals(Status.SOLD) && principal == null) {
 //            throw new NotEnoughRightException("You can't browse this post!");
         }
-        return Mapper.convertToPostDTO(gameObject);
+        return Mapper.convertToGameObjectDTO(gameObject);
     }
 
     /**
@@ -101,11 +94,11 @@ public class GameObjectController {
      */
     @GetMapping("/{id}/unapproved")
     public GameObjectDTO getUnconfirmedGameObject(@PathVariable("id") long id) {
-        return Mapper.convertToPostDTO(gameObjectService.getUnconfirmedGameObject(id));
+        return Mapper.convertToGameObjectDTO(gameObjectService.getUnconfirmedGameObject(id));
     }
-    
+
     @GetMapping("/my")
-    public List<GameObjectDTO> getAllMyPosts(Principal principal) {
+    public List<GameObjectDTO> getAllMyGameObjects(Principal principal) {
         User user = userService.getUserByEmailAndEnabled(principal.getName());
 
         return Mapper.convertToListPostDTO(gameObjectService.getAllMyGameObjects(user));

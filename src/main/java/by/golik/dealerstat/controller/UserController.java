@@ -1,14 +1,11 @@
 package by.golik.dealerstat.controller;
 
 import by.golik.dealerstat.entity.User;
+import by.golik.dealerstat.service.GameObjectService;
 import by.golik.dealerstat.service.UserService;
 import by.golik.dealerstat.service.dto.RoleDTO;
 import by.golik.dealerstat.service.dto.UserDTO;
 import by.golik.dealerstat.service.util.Mapper;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -29,8 +26,11 @@ public class UserController {
 
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    private final GameObjectService gameObjectService;
+
+    public UserController(UserService userService, GameObjectService gameObjectService) {
         this.userService = userService;
+        this.gameObjectService = gameObjectService;
     }
 
     @GetMapping("/{id}")
@@ -69,10 +69,39 @@ public class UserController {
      *
      * @return
      */
-    @GetMapping("/traders")
-    public List<UserDTO> getAllTraders() {
-        return Mapper.convertToListUserDTO(userService.getAllTraders());
-    }
+//    @GetMapping("/traders")
+//    public List<UserDTO> getAllTraders(@RequestParam(required = false, defaultValue = "5")
+//                                       @DecimalMax(value = "5.0",
+//                                               message = "min parameter should be less or equal than 5.0") double max,
+//                                       @RequestParam(required = false, defaultValue = "1") @DecimalMin(value = "1.0",
+//                                               message = "min parameter should be more or equal than 1.0") double min,
+//                                       @RequestParam(required = false) String games,
+//                                       @RequestParam(required = false, defaultValue = "0")
+//                                       @Min(value = 0, message = "skip parameter should be more or equal than 0") int skip,
+//                                       @RequestParam(required = false, defaultValue = "0")
+//                                       @Min(value = 0, message = "limit parameter should be more or equal than 0") int limit) {
+//        String[] split;
+//        List<Long> idList;
+//        List<User> users;
+//
+//        if (min > max) {
+//            throw new ValidationException("min parameter should be less than max!");
+//        }
+//        try {
+//            split = games.split(",");
+//            idList = gameObjectService.getGameIdByName(split);
+//            if (idList == null) {
+//                return new ArrayList<UserDTO>();
+//            }
+//            users = userService.getAllTradersByGames(idList);
+//        }
+//        catch (NullPointerException e) {
+//            users = userService.getAllTraders();
+//            System.out.println(users);
+//        }
+//        users = userService.filterTraders(users, max, min, skip, limit);
+//        return Mapper.convertToListUserDTO(users);
+//    }
 
 
     @PutMapping("/my")
