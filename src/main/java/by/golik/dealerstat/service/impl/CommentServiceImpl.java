@@ -96,9 +96,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public List<Comment> getAllCommentsByGameObject(GameObject gameObject) {
-        return commentRepository.findAllByGameobject(gameObject);
+    public List<Comment> getAllCommentsByGameObject(Long id) {
+        return null;
     }
 
     @Override
@@ -128,5 +127,16 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Comment comment) {
         log.info("Comment " + comment + " has been deleted.");
         commentRepository.delete(comment);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Comment> getAllCommentsByGameObject(GameObject gameObject) {
+        return commentRepository.findAllByGameobject(gameObject);
+    }
+
+    @Override
+    public void saveWithGameObjectId(Comment comment, Long authorId) {
+
     }
 }

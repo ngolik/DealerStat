@@ -1,7 +1,6 @@
 package by.golik.dealerstat.controller;
 
 import by.golik.dealerstat.entity.Comment;
-import by.golik.dealerstat.entity.Game;
 import by.golik.dealerstat.entity.GameObject;
 import by.golik.dealerstat.entity.User;
 import by.golik.dealerstat.service.CommentService;
@@ -42,24 +41,25 @@ public class CommentController {
             this.userService = userService;
         }
 
-        @PostMapping("/posts/{id}/comments")
-        @ResponseStatus(HttpStatus.CREATED)
-        public void createComment(@PathVariable("id") int id,
-                                  @RequestBody @Valid CommentDTO commentDTO,
-                                  Principal principal) {
-
-            User user = userService.getUserByEmailAndEnabled(principal.getName());
-            GameObject post = gameObjectService.getGameObject(id);
-            Comment comment;
-
-            if (user.equals(post.getAuthor())) {
-//                throw new NotEnoughRightException("You can't rate this post");
-            }
-            comment = Mapper.convertToComment(commentDTO,userService.isAdmin(user),
-                    user, post);
-            commentService.createComment(comment, post, user);
+    /**
+     *
+     * @param comment
+     * @param objectId
+     * @return
+     */
+    @PostMapping("objects/{objectId}/comments")
+    public ResponseEntity<Comment> postWithGameObject(@RequestBody Comment comment, @PathVariable Long objectId) {
+        if (comment == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
+        commentService.saveWithGameObjectId(comment, objectId);
+        return new ResponseEntity<>(comment, HttpStatus.CREATED);
+    }
 
+    /**
+     *
+     * @param id
+     */
         @PostMapping("comments/{id}/approve")
         public void approveComment(@PathVariable("id") int id) {
             Comment comment = commentService.getUnconfirmedComment(id);
@@ -67,29 +67,48 @@ public class CommentController {
             commentService.approveComment(comment);
         }
 
-        @GetMapping("comments/{id}/unapproved")
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("comments/{id}/unapproved")
         public CommentDTO getUnapprovedComment(@PathVariable("id") int id) {
             return Mapper.convertToCommentDTO(commentService.getUnconfirmedComment(id));
         }
 
-        @GetMapping("comments/{id}")
+    /**
+     *
+     * @param id
+     * @return
+     */
+    @GetMapping("comments/{id}")
         public CommentDTO getComment(@PathVariable("id") int id) {
             return Mapper.convertToCommentDTO(commentService.getComment(id));
         }
 
-        @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    /**
+     *
+     * @return
+     */
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
         public ResponseEntity<List<Comment>> getAllComments() {
         List<Comment> comments = this.commentService.getAllComments();
         return generateListResponse(comments);
         }
 
-        @GetMapping("posts/{id}/comments")
-        public List<CommentDTO> getAllCommentsByPost(@PathVariable("id") int id) {
-            GameObject gameObject = gameObjectService.getGameObject(id);
+    @GetMapping("objects/{id}/comments")
+    public List<CommentDTO> getAllCommentsByGameObject(@PathVariable("id") int id) {
+        GameObject gameObject = gameObjectService.findGameObjectById(id);
 
-            return Mapper.convertToListCommentDTO(commentService.getAllCommentsByGameObject(gameObject));
-        }
+        return Mapper.convertToListCommentDTO(commentService.getAllCommentsByGameObject(gameObject));
+    }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
         @GetMapping("users/{id}/comments")
         public List<CommentDTO> getAllCommentsByAuthor(@PathVariable("id") int id) {
             User user = userService.getUser(id);

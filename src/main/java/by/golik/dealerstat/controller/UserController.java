@@ -47,20 +47,33 @@ public class UserController {
         return userDTO;
     }
 
+    /**
+     *
+     * @return
+     */
     @GetMapping
     public List<UserDTO> getAllUsers() {
         return Mapper.convertToListUserDTO(userService.getAllUsers());
     }
 
+    /**
+     *
+     * @return
+     */
     @GetMapping("/readers")
     public List<UserDTO> getAllReaders() {
         return Mapper.convertToListUserDTO(userService.getAllAnons());
     }
 
+    /**
+     *
+     * @return
+     */
     @GetMapping("/traders")
     public List<UserDTO> getAllTraders() {
         return Mapper.convertToListUserDTO(userService.getAllTraders());
     }
+
 
     @PutMapping("/my")
     public void updateUser(@RequestBody @Valid UserDTO userDTO,

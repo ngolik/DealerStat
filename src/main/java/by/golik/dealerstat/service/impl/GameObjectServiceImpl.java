@@ -47,7 +47,7 @@ public class GameObjectServiceImpl implements GameObjectService {
     @Override
     public void approveGameObject(GameObject gameObject) {
         gameObject.setApproved(true);
-        if (gameObject.getUnconfirmedGameObject() != null){
+        if (gameObject.getUnconfirmedGameObject() != null) {
             unconfirmedGameObjectRepository.delete(gameObject.getUnconfirmedGameObject());
         }
         gameObjectRepository.save(gameObject);
@@ -56,11 +56,11 @@ public class GameObjectServiceImpl implements GameObjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public GameObject getGameObject(long id) {
+    public GameObject findGameObjectById(long id) {
         Optional<GameObject> optionalGameObject = gameObjectRepository.findByIdAndApprovedTrue(id);
 
         if (!optionalGameObject.isPresent()) {
-            log.info("GameObject with " + id + " doesn't exist!");
+            log.info("Post with " + id + " doesn't exist!");
 //            throw new ResourceNotFoundException("This post doesn't exist!");
         }
         return optionalGameObject.get();
@@ -83,8 +83,7 @@ public class GameObjectServiceImpl implements GameObjectService {
 
             if (unconfirmedGameObject.getGames() != null) {
                 games = new ArrayList<>(unconfirmedGameObject.getGames());
-            }
-            else {
+            } else {
                 games = null;
             }
             gameObject.setTitle(unconfirmedGameObject.getTitle());
@@ -126,7 +125,7 @@ public class GameObjectServiceImpl implements GameObjectService {
 
         if (gameDTOS == null) return games;
         gameDTOS = gameDTOS.stream().distinct().collect(Collectors.toList());
-        for (GameDTO gameDTO: gameDTOS) {
+        for (GameDTO gameDTO : gameDTOS) {
             Optional<Game> optionalGame = gameRepository.findByName(gameDTO.getName());
             Game game;
 
@@ -148,7 +147,7 @@ public class GameObjectServiceImpl implements GameObjectService {
         List<Long> idList = new ArrayList<>();
         boolean nonExist = false;
 
-        for (String name: names) {
+        for (String name : names) {
             Optional<Game> optionalGame = gameRepository.findByName(name);
 
             if (optionalGame.isPresent() && optionalGame.get().getGameobjects() != null) {
@@ -173,8 +172,7 @@ public class GameObjectServiceImpl implements GameObjectService {
             gameObject.setText(gameObjectDTO.getText());
             gameObject.setStatus(Status.valueOf(gameObjectDTO.getStatus()));
             gameObject.setGames(games);
-        }
-        else {
+        } else {
             UnconfirmedGameObject unconfirmedGameObject = Mapper
                     .convertToUnconfirmedGameObject(gameObjectDTO, games, gameObject);
 
@@ -191,9 +189,13 @@ public class GameObjectServiceImpl implements GameObjectService {
         log.info("GameObject " + gameObject + " has been deleted.");
     }
 
-    @Scheduled(cron = "0 0/15 * * * *")
-    public void deleteUnusedGames() {
-        gameRepository.deleteAllUnusedGames();
-        log.info("Unused games have been deleted.");
+    @Override
+    public void deleteGameById(Long id) {
+        gameObjectRepository.deleteById(id);
+    }
+
+    @Override
+    public Optional<GameObject> findByGameObjectId(Long id) {
+        return Optional.empty();
     }
 }

@@ -16,10 +16,4 @@ public interface GameRepository extends JpaRepository<Game, Long> {
 
     Optional<Game> findByName(String name);
 
-    @Modifying
-    @Query(nativeQuery = true, value = "delete from game g where \n" +
-            "not exists(select * from object_game_games where game_id = g.id) \n" +
-            "and not exists(select * from unconfirmed_gameobject_games where game_id = g.id)")
-    void deleteAllUnusedGames();
-
 }

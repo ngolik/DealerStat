@@ -23,7 +23,7 @@ public class GameObject extends AbstractGameObject {
 
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
-    @JoinColumn(nullable = false)
+    @JoinColumn()
     private User author;
 
     @Setter
@@ -37,6 +37,7 @@ public class GameObject extends AbstractGameObject {
 
     @Setter
     @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinTable(
             joinColumns = @JoinColumn(name = "gameobjects_id"),
             inverseJoinColumns = @JoinColumn(name = "game_id")
