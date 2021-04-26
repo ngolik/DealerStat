@@ -33,13 +33,14 @@ public class UserController {
         this.gameObjectService = gameObjectService;
     }
 
+    //todo
     @GetMapping("/{id}")
     public UserDTO getUser(@PathVariable("id") int id, Principal principal) {
         User user = userService.getUser(id);
         User principalUser = userService.getUserByEmailAndEnabled(principal.getName());
         UserDTO userDTO;
 
-//        userService.calculateRating(user);
+        userService.calculateRate(user);
         userDTO = Mapper.convertToUserDTO(user);
         if (userService.isAdmin(principalUser) || principalUser.getId() == id) {
             userDTO.setEmail(user.getEmail());
@@ -69,39 +70,39 @@ public class UserController {
      *
      * @return
      */
-//    @GetMapping("/traders")
-//    public List<UserDTO> getAllTraders(@RequestParam(required = false, defaultValue = "5")
-//                                       @DecimalMax(value = "5.0",
-//                                               message = "min parameter should be less or equal than 5.0") double max,
-//                                       @RequestParam(required = false, defaultValue = "1") @DecimalMin(value = "1.0",
-//                                               message = "min parameter should be more or equal than 1.0") double min,
-//                                       @RequestParam(required = false) String games,
-//                                       @RequestParam(required = false, defaultValue = "0")
-//                                       @Min(value = 0, message = "skip parameter should be more or equal than 0") int skip,
-//                                       @RequestParam(required = false, defaultValue = "0")
-//                                       @Min(value = 0, message = "limit parameter should be more or equal than 0") int limit) {
-//        String[] split;
-//        List<Long> idList;
-//        List<User> users;
-//
-//        if (min > max) {
-//            throw new ValidationException("min parameter should be less than max!");
-//        }
-//        try {
-//            split = games.split(",");
-//            idList = gameObjectService.getGameIdByName(split);
-//            if (idList == null) {
-//                return new ArrayList<UserDTO>();
-//            }
-//            users = userService.getAllTradersByGames(idList);
-//        }
-//        catch (NullPointerException e) {
-//            users = userService.getAllTraders();
-//            System.out.println(users);
-//        }
-//        users = userService.filterTraders(users, max, min, skip, limit);
-//        return Mapper.convertToListUserDTO(users);
-//    }
+    @GetMapping("/traders")
+    public List<UserDTO> getAllTraders(@RequestParam(required = false, defaultValue = "5")
+                                       @DecimalMax(value = "5.0",
+                                               message = "min parameter should be less or equal than 5.0") double max,
+                                       @RequestParam(required = false, defaultValue = "1") @DecimalMin(value = "1.0",
+                                               message = "min parameter should be more or equal than 1.0") double min,
+                                       @RequestParam(required = false) String games,
+                                       @RequestParam(required = false, defaultValue = "0")
+                                       @Min(value = 0, message = "skip parameter should be more or equal than 0") int skip,
+                                       @RequestParam(required = false, defaultValue = "0")
+                                       @Min(value = 0, message = "limit parameter should be more or equal than 0") int limit) {
+        String[] split;
+        List<Long> idList;
+        List<User> users;
+
+        if (min > max) {
+            throw new ValidationException("min parameter should be less than max!");
+        }
+        try {
+            split = games.split(",");
+            idList = gameObjectService.getGameIdByName(split);
+            if (idList == null) {
+                return new ArrayList<UserDTO>();
+            }
+            users = userService.getAllTradersByGames(idList);
+        }
+        catch (NullPointerException e) {
+            users = userService.getAllTraders();
+            System.out.println(users);
+        }
+
+        return Mapper.convertToListUserDTO(users);
+    }
 
 
     @PutMapping("/my")

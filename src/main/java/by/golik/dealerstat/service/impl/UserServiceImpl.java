@@ -30,7 +30,6 @@ import javax.mail.internet.MimeMessage;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.stream.Collectors;
 
 /**
  * @author Nikita Golik
@@ -366,13 +365,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void calculateRate(User user) {
         if (!user.getRole().getName().equals("ROLE_ANON")) {
-//            user.setRate(userRepository.findRateByUser(user));
+            user.setRate(userRepository.findRateByUser(user));
         }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<User> getAllTradersByGames(List<Integer> idList) {
+    public List<User> getAllTradersByGames(List<Long> idList) {
         return userRepository.findUserByGames(idList);
     }
 }

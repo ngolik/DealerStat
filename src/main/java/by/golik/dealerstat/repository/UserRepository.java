@@ -25,9 +25,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByIdAndEnabledTrue(long id);
 
-//    @Query("select avg(c.rate) from User u, GameObject p, Comment c " +
-//            "where u = :user and p.author = u and c.gameobject = p group by u")
-//    Double findRateByUser(@Param("user") User user);
+    @Query(nativeQuery = true, value = "select avg(c.rate) from mydb.user u, mydb.gameobject p, mydb.comment c " +
+            "where u.id = :user and p.author_id = u.id and c.gameobject_id = p group by u.id")
+    Double findRateByUser(@Param("user") User user);
 
     @Query("select u from User u where u.role.name = 'ROLE_ANON'")
     List<User> findAllAnons();
@@ -42,5 +42,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "where u.id in(select distinct g.author_id from mydb.gameobject g where g.id \n" +
             "in(select distinct k.gameobjects_id  from mydb.gameobject_game k " +
             " where k.game_id in(:games)))")
-    List<User> findUserByGames(@Param("games") List<Integer> games);
+    List<User> findUserByGames(@Param("games") List<Long> games);
 }
