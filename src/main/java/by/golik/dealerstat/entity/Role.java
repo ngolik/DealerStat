@@ -1,6 +1,8 @@
 package by.golik.dealerstat.entity;
 
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -24,6 +26,7 @@ public class Role implements GrantedAuthority {
     private String name;
 
     @OneToMany(mappedBy = "role")
+    @LazyCollection(LazyCollectionOption.FALSE)
     @ToString.Exclude
     private List<User> users;
 

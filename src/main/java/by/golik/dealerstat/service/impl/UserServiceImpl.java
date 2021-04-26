@@ -204,7 +204,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public User getUser(int id) {
+    public User getUser(long id) {
         Optional<User> optionalUser = userRepository.findByIdAndEnabledTrue(id);
         User user;
 

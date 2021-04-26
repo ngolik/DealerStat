@@ -17,7 +17,7 @@ public interface UserService extends UserDetailsService {
     void createCode(String email);
     void confirmUser(String token);
     void confirmCode(NewPasswordDTO newPasswordDTO);
-    User getUser(int id);
+    User getUser(long id);
     User getUserByEmailAndEnabled(String email);
     User getByEmailAndPassword(String email, String password) throws Exception;
     List<User> getAllUsers();

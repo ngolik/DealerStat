@@ -19,6 +19,7 @@ public interface CommentService {
     Comment getComment(long id);
     Comment getUnconfirmedComment(long id);
     List<Comment> getAllCommentsByGameObject(GameObject gameObject);
+    List<Comment> getAllComments();
     List<Comment> getAllCommentsByAuthor(User user);
     void updateComment(Comment comment, CommentDTO commentDTO, boolean admin);
     void deleteComment(Comment comment);

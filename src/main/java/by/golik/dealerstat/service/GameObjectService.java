@@ -18,7 +18,7 @@ public interface GameObjectService {
     GameObject getGameObject(long id);
     GameObject getUnconfirmedGameObject(long id);
     List<GameObject> getAllMyGameObjects(User user);
-    List<GameObject> getAllGameObjects();
+    List<GameObject> findAllGameObjects();
 //    List<GameObject> getAllAvailableGameObjects();
     List<Game> getAllGames();
     List<Game> getGamesByGameDTOS(List<GameDTO> gameDTOS);

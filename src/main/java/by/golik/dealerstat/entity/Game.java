@@ -1,7 +1,5 @@
 package by.golik.dealerstat.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,15 +25,18 @@ public class Game {
     protected Long id;
 
     @Column(unique = true)
-    @NaturalId
+    @NaturalId(mutable=true)
     private String name;
 
     @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @ToString.Exclude
     private List<GameObject> gameobjects;
 
     @ManyToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     @ToString.Exclude
+
     private List<UnconfirmedGameObject> unconfirmedGameObjects;
 
     public Game(String name) {

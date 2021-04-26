@@ -22,7 +22,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     boolean existsByEmail(String email);
 
 //    @Query("select avg(c.rate) from User u, GameObject p, Comment c " +
-//            "where u = :user and p.author = u and c.gameObject = p group by u")
+//            "where u = :user and p.author = u and c.gameobject = p group by u")
 //    Double findRateByUser(@Param("user") User user);
 
     Optional<User> findByEmailAndEnabledTrue(String email);

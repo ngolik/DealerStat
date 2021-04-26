@@ -103,8 +103,8 @@ public class GameObjectServiceImpl implements GameObjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<GameObject> getAllGameObjects() {
-        return gameObjectRepository.findAllByApprovedIsTrue();
+    public List<GameObject> findAllGameObjects() {
+        return gameObjectRepository.findAll();
     }
 
 //    @Override

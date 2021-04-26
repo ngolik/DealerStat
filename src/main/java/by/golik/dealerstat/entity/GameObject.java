@@ -1,6 +1,8 @@
 package by.golik.dealerstat.entity;
 
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -20,6 +22,7 @@ public class GameObject extends AbstractGameObject {
     private boolean approved;
 
     @ManyToOne
+    @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(nullable = false)
     private User author;
 

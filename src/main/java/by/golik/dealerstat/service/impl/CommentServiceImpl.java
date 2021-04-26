@@ -36,6 +36,11 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public List<Comment> getAllComments() {
+        return commentRepository.findAll();
+    }
+
+    @Override
     public void createComment(Comment comment, GameObject gameObject, User user) {
         if (commentRepository.existsByAuthorAndGameobject(user, gameObject)) {
             log.info("Comment " + comment + " already exist!");
