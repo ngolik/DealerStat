@@ -1,5 +1,6 @@
 package by.golik.dealerstat.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -30,10 +31,12 @@ public class GameObject extends AbstractGameObject {
     @ToString.Exclude
     private UnconfirmedGameObject unconfirmedGameObject;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "gameobject", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     private List<Comment> comments;
 
+    @JsonIgnore
     @Setter
     @ManyToMany
     @LazyCollection(LazyCollectionOption.FALSE)

@@ -1,6 +1,8 @@
 package by.golik.dealerstat.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -43,15 +45,18 @@ public class User extends AbstractEntity implements UserDetails {
     @Transient
     private Double rate;
 
+    @JsonIgnore
     @ManyToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     @JoinColumn(nullable = false)
     private Role role;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     private List<GameObject> gameObjects;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
     @ToString.Exclude
     private List<Comment> comments;

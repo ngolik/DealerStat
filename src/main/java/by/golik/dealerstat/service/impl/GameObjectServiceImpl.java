@@ -10,6 +10,7 @@ import by.golik.dealerstat.service.dto.GameObjectDTO;
 import by.golik.dealerstat.service.util.Mapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,14 +56,13 @@ public class GameObjectServiceImpl implements GameObjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public GameObject findGameObjectById(long id) {
+    public Optional<GameObject> findGameObjectById(long id) {
         Optional<GameObject> optionalGameObject = gameObjectRepository.findByIdAndApprovedTrue(id);
-
         if (!optionalGameObject.isPresent()) {
             log.info("Post with " + id + " doesn't exist!");
-//            throw new ResourceNotFoundException("This post doesn't exist!");
+//            throw new ResourceNotFoundException("This gameobject doesn't exist!");
         }
-        return optionalGameObject.get();
+        return gameObjectRepository.findById(id);
     }
 
     @Override
@@ -158,6 +158,17 @@ public class GameObjectServiceImpl implements GameObjectService {
         }
         gameObjectRepository.save(gameObject);
         log.info("GameObject " + gameObject + " has been updated.");
+    }
+
+    @Override
+    public HttpStatus update(GameObject gameObject, Long id) {
+        Optional<GameObject> gameObjectOptional = gameObjectRepository.findById(id);
+        if (!gameObjectOptional.isPresent()) {
+            return HttpStatus.NOT_FOUND;
+        }
+        gameObject.setId(id);
+        gameObjectRepository.save(gameObject);
+        return HttpStatus.OK;
     }
 
     @Override

@@ -112,6 +112,13 @@
       <artifactId>jackson-databind</artifactId>
       <version>2.12.3</version>
     </dependency>
+    <!-- https://mvnrepository.com/artifact/org.glassfish.jersey.media/jersey-media-json-jackson -->
+    <dependency>
+      <groupId>org.glassfish.jersey.media</groupId>
+      <artifactId>jersey-media-json-jackson</artifactId>
+      <version>3.0.1</version>
+    </dependency>
+
     <!-- https://mvnrepository.com/artifact/javax.validation/validation-api -->
     <dependency>
       <groupId>javax.validation</groupId>

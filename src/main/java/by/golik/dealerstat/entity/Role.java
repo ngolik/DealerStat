@@ -1,5 +1,8 @@
 package by.golik.dealerstat.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -25,6 +28,7 @@ public class Role implements GrantedAuthority {
     @Column(nullable = false)
     private String name;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "role")
     @LazyCollection(LazyCollectionOption.FALSE)
     @ToString.Exclude

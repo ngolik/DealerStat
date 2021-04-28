@@ -53,7 +53,7 @@ public class GameController {
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Game> put(@RequestBody Game game, @PathVariable Long id) {
+    public ResponseEntity<Game> updateGame(@RequestBody Game game, @PathVariable Long id) {
         return new ResponseEntity<>(gameService.update(game, id));
     }
 

@@ -6,6 +6,7 @@ import by.golik.dealerstat.service.UserService;
 import by.golik.dealerstat.service.dto.RoleDTO;
 import by.golik.dealerstat.service.dto.UserDTO;
 import by.golik.dealerstat.service.util.Mapper;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,6 +29,7 @@ public class UserController {
 
     private final GameObjectService gameObjectService;
 
+    @Autowired
     public UserController(UserService userService, GameObjectService gameObjectService) {
         this.userService = userService;
         this.gameObjectService = gameObjectService;

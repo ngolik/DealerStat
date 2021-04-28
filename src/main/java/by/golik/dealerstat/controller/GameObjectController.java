@@ -1,11 +1,9 @@
 package by.golik.dealerstat.controller;
 
 import by.golik.dealerstat.entity.*;
+import by.golik.dealerstat.exception.NotEnoughRightException;
 import by.golik.dealerstat.service.GameObjectService;
 import by.golik.dealerstat.service.UserService;
-import by.golik.dealerstat.service.dto.GameDTO;
-import by.golik.dealerstat.service.dto.GameObjectDTO;
-import by.golik.dealerstat.service.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -35,22 +33,6 @@ public class GameObjectController {
     }
 
     /**
-     * Создается
-     * @param gameObject
-     * @return
-     */
-    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GameObject> post(@RequestBody GameObject gameObject) {
-        HttpHeaders headers = new HttpHeaders();
-        if (gameObject == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
-
-        this.gameObjectService.createGameObject(gameObject);
-        return new ResponseEntity<>(gameObject, headers, HttpStatus.CREATED);
-    }
-
-    /**
      * Все видны
      * @return
      */
@@ -63,17 +45,35 @@ public class GameObjectController {
     /**
      * Достаются по айди
      * @param id
-     * @param principal
+     * @param
      * @return
      */
-    @GetMapping("/{id}")
-    public GameObjectDTO getGameObject(@PathVariable("id") long id, Principal principal) {
-        GameObject gameObject = gameObjectService.findGameObjectById(id);
-
-        if (gameObject.getStatus().equals(Status.SOLD) && principal == null) {
-//            throw new NotEnoughRightException("You can't browse this post!");
+    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GameObject> get(@PathVariable Long id) throws NotEnoughRightException {
+        if (!this.gameObjectService.findGameObjectById(id).isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        return Mapper.convertToGameObjectDTO(gameObject);
+        GameObject gameObject = this.gameObjectService.findGameObjectById(id).get();
+        if (gameObject.getStatus().equals(Status.SOLD)) {
+            throw new NotEnoughRightException("You can't browse this gameobject!");
+        }
+        return new ResponseEntity<>(gameObject, HttpStatus.OK);
+    }
+
+    /**
+     * Создается
+     * @param gameObject
+     * @return
+     */
+    @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GameObject> createGameObject(@RequestBody GameObject gameObject) {
+        HttpHeaders headers = new HttpHeaders();
+        if (gameObject == null) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+
+        this.gameObjectService.createGameObject(gameObject);
+        return new ResponseEntity<>(gameObject, headers, HttpStatus.CREATED);
     }
 
     /**
@@ -86,22 +86,30 @@ public class GameObjectController {
         gameObjectService.approveGameObject(gameObject);
     }
 
-
     /**
      * Можно увидеть все неподтвржденные (подтвержденные тоже видны)
      * @param id
      * @return
      */
     @GetMapping("/{id}/unapproved")
-    public GameObjectDTO getUnconfirmedGameObject(@PathVariable("id") long id) {
-        return Mapper.convertToGameObjectDTO(gameObjectService.getUnconfirmedGameObject(id));
+    public ResponseEntity<GameObject> getUnconfirmedGameObject(@PathVariable("id") long id) {
+        if (!this.gameObjectService.findGameObjectById(id).isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        GameObject gameObject = gameObjectService.getUnconfirmedGameObject(id);
+        return new ResponseEntity<>(gameObject, HttpStatus.OK);
     }
 
+    /**
+     *
+     * @param principal
+     * @return
+     */
     @GetMapping("/my")
-    public List<GameObjectDTO> getAllMyGameObjects(Principal principal) {
+    public ResponseEntity<List<GameObject>> getAllMyGameObjects(Principal principal) {
         User user = userService.getUserByEmailAndEnabled(principal.getName());
-
-        return Mapper.convertToListPostDTO(gameObjectService.getAllMyGameObjects(user));
+        List<GameObject> gameObjects = gameObjectService.getAllMyGameObjects(user);
+        return generateListResponse(gameObjects);
     }
 
     /**
@@ -109,44 +117,30 @@ public class GameObjectController {
      * @return
      */
     @GetMapping("/games")
-    public List<GameDTO> getAllGames() {
-        return Mapper.convertToListGameDTO(gameObjectService.getAllGames());
+    public List<Game> getAllGames() {
+        return gameObjectService.getAllGames();
     }
 
     /**
      * Нет прав (юзер д.б. равен юзеру)
      * @param id
-     * @param gameObjectDTO
-     * @param principal
+     * @param
      */
     @PutMapping("/{id}")
-    public void updatePost(@PathVariable("id") long id,
-                           @RequestBody @Valid GameObjectDTO gameObjectDTO,
-                           Principal principal) {
-        GameObject gameObject = gameObjectService.getUnconfirmedGameObject(id);
-        User user = userService.getUserByEmailAndEnabled(principal.getName());
-
-        if (!gameObject.getAuthor().equals(user)) {
-//            throw new NotEnoughRightException("You can't change this post!");
-        }
-        gameObjectService.updateGameObject(gameObject, gameObjectDTO, userService.isAdmin(user));
+    public ResponseEntity<GameObject> updateGameObject(@RequestBody GameObject gameObject, @PathVariable Long id) {
+        return new ResponseEntity<>(gameObjectService.update(gameObject, id));
     }
 
     /**
      * Нужны права для удаления
      * @param id
-     * @param principal
+     * @param
      */
-    @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePost(@PathVariable("id") long id, Principal principal) {
+    @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<GameObject> deleteGameObject(@PathVariable("id") long id) {
         GameObject gameObject = gameObjectService.getUnconfirmedGameObject(id);
-        User user = userService.getUserByEmailAndEnabled(principal.getName());
-
-        if (!userService.isAdmin(user) && !gameObject.getAuthor().equals(user)) {
-//              throw new NotEnoughRightException("You can't delete this post!");
-        }
         gameObjectService.deleteGameObject(gameObject);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     protected ResponseEntity<List<GameObject>> generateListResponse(List<GameObject> gameObjects) {

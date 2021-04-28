@@ -97,12 +97,12 @@ public class CommentController {
         return generateListResponse(comments);
         }
 
-    @GetMapping("objects/{id}/comments")
-    public List<CommentDTO> getAllCommentsByGameObject(@PathVariable("id") int id) {
-        GameObject gameObject = gameObjectService.findGameObjectById(id);
-
-        return Mapper.convertToListCommentDTO(commentService.getAllCommentsByGameObject(gameObject));
-    }
+//    @GetMapping("objects/{id}/comments")
+//    public List<CommentDTO> getAllCommentsByGameObject(@PathVariable("id") int id) {
+//        GameObject gameObject = gameObjectService.findGameObjectById(id);
+//
+//        return Mapper.convertToListCommentDTO(commentService.getAllCommentsByGameObject(gameObject));
+//    }
 
     /**
      *

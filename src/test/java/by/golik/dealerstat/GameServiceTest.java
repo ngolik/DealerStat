@@ -32,7 +32,7 @@ public class GameServiceTest {
     @Before
     public void init() {
         gameService = new GameServiceImpl(gameRepository);
-        testGame = Optional.of(new Game("Message"));
+        testGame = Optional.of(new Game("game"));
         when(gameRepository.findById((long) 1)).thenReturn(testGame);
     }
 
