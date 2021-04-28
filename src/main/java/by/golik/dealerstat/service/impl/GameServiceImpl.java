@@ -22,7 +22,7 @@ public class GameServiceImpl implements GameService {
     GameRepository gameRepository;
 
     @Autowired
-    public void setGameRepository(GameRepository gameRepository) {
+    public GameServiceImpl(GameRepository gameRepository) {
         this.gameRepository = gameRepository;
     }
 

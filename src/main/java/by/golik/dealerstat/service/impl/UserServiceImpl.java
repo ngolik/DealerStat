@@ -38,14 +38,14 @@ import java.util.concurrent.ScheduledExecutorService;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService {
-    //todo reset
+
     private final UserRepository userRepository;
+
+    private final RoleRepository roleRepository;
 
     private final TokenRepository tokenRepository;
 
     private final ReplyCodeRepository replyCodeRepository;
-
-    private final RoleRepository roleRepository;
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -92,7 +92,6 @@ public class UserServiceImpl implements UserService {
     @PostConstruct
     public void init() {
         Role role;
-
         if (roleRepository.count() == 0) {
             roleRepository.save(new Role("ROLE_ADMIN"));
             roleRepository.save(new Role("ROLE_TRADER"));

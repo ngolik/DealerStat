@@ -1,5 +1,7 @@
 package by.golik.dealerstat;
+
 import by.golik.dealerstat.controller.UserController;
+import by.golik.dealerstat.entity.GameObject;
 import by.golik.dealerstat.entity.Role;
 import by.golik.dealerstat.entity.User;
 import by.golik.dealerstat.exception.NotEnoughRightException;
@@ -13,7 +15,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +32,7 @@ import static org.mockito.Mockito.when;
 /**
  * @author Nikita Golik
  */
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
 @ContextConfiguration(loader= AnnotationConfigContextLoader.class)
 public class IntegrationTest {
 
@@ -75,17 +76,16 @@ public class IntegrationTest {
 
         @Bean
         public UserService userService() {
-            UserService userService = new UserServiceImpl(userRepository,
-                    roleRepository, tokenRepository, replyCodeRepository,
-                    bCryptPasswordEncoder());
+            UserService userService = new UserServiceImpl(userRepository, roleRepository,
+                    tokenRepository, replyCodeRepository, bCryptPasswordEncoder());
             return userService;
         }
 
         @Bean
         public GameObjectService gameObjectService() {
-            GameObjectService gameObjectService = new GameObjectServiceImpl(gameObjectRepository,
+           GameObjectService gameObjectService = new GameObjectServiceImpl(gameObjectRepository,
                     unconfirmedGameObjectRepository, gameRepository);
-            return gameObjectService;
+           return gameObjectService;
         }
 
         @Bean
@@ -129,20 +129,20 @@ public class IntegrationTest {
         when(userRepository.findByIdAndEnabledTrue(1)).thenReturn(testTrader);
         when(userRepository.findByIdAndEnabledTrue(2)).thenReturn(testReader);
         when(userRepository.findAllNonReaders()).thenReturn(testTraders);
-//        when(userRepository.findRatingByUser(testTraders.get(0))).thenReturn(3.1);
-//        when(userRepository.findRatingByUser(testTraders.get(1))).thenReturn(2.9);
-//        when(userRepository.findRatingByUser(testTraders.get(2))).thenReturn(3.8);
-//        when(userRepository.findRatingByUser(testTraders.get(3))).thenReturn(4.4);
-//        when(userRepository.findRatingByUser(testTraders.get(4))).thenReturn(4.1);
+        when(userRepository.findRateByUser(testTraders.get(0))).thenReturn(3.1);
+        when(userRepository.findRateByUser(testTraders.get(1))).thenReturn(2.9);
+        when(userRepository.findRateByUser(testTraders.get(2))).thenReturn(3.8);
+        when(userRepository.findRateByUser(testTraders.get(3))).thenReturn(4.4);
+        when(userRepository.findRateByUser(testTraders.get(4))).thenReturn(4.1);
     }
 
-//    @Test
-//    public void getAllTradersTest() {
-//        List<UserDTO> results;
-//
-//        results = userController.getAllTraders(4.5, 3.0, null, 1, 2);
-//        assertEquals(results.size(), 2);
-//    }
+    @Test
+    public void getAllTradersTest() {
+        List<UserDTO> results;
+
+        results = userController.getAllTraders(4.5, 3.0, null, 1, 2);
+        assertEquals(results.size(), 2);
+    }
 
     @Test(expected = NotEnoughRightException.class)
     public void deleteUserTest() {
