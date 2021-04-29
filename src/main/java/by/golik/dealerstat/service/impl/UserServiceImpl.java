@@ -1,9 +1,6 @@
 package by.golik.dealerstat.service.impl;
 
-import by.golik.dealerstat.entity.ReplyCode;
-import by.golik.dealerstat.entity.Role;
-import by.golik.dealerstat.entity.Token;
-import by.golik.dealerstat.entity.User;
+import by.golik.dealerstat.entity.*;
 import by.golik.dealerstat.repository.ReplyCodeRepository;
 import by.golik.dealerstat.repository.RoleRepository;
 import by.golik.dealerstat.repository.TokenRepository;
@@ -16,6 +13,7 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
@@ -285,12 +283,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void changeRole(User user, String roleName) {
+    public HttpStatus changeRole(User user, String roleName) {
         Role role = roleRepository.findByName(roleName);
 
         user.setRole(role);
         userRepository.save(user);
         log.info("Role of User " + user + " has been changed.");
+        return HttpStatus.OK;
     }
 
     @Override
@@ -372,5 +371,21 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public List<User> getAllTradersByGames(List<Long> idList) {
         return userRepository.findUserByGames(idList);
+    }
+
+    @Override
+    public Optional<User> findByUserId(Long id) {
+        return userRepository.findById(id);
+    }
+
+    @Override
+    public HttpStatus update(User user, Long id) {
+        Optional<User> userOptional = userRepository.findById(id);
+        if (!userOptional.isPresent()) {
+            return HttpStatus.NOT_FOUND;
+        }
+        user.setId(id);
+        userRepository.save(user);
+        return HttpStatus.OK;
     }
 }

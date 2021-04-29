@@ -11,6 +11,7 @@ import by.golik.dealerstat.service.dto.CommentDTO;
 import by.golik.dealerstat.service.util.Mapper;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import org.springframework.transaction.annotation.Transactional;
@@ -105,6 +106,17 @@ public class CommentServiceImpl implements CommentService {
         }
         log.info("Comment " + comment + " has been updated.");
         commentRepository.save(comment);
+    }
+
+    @Override
+    public HttpStatus update(Comment comment, Long id) {
+        Optional<Comment> gameObjectOptional = commentRepository.findById(id);
+        if (!gameObjectOptional.isPresent()) {
+            return HttpStatus.NOT_FOUND;
+        }
+        comment.setId(id);
+        commentRepository.save(comment);
+        return HttpStatus.OK;
     }
 
     @Override

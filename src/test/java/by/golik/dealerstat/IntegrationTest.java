@@ -137,13 +137,13 @@ public class IntegrationTest {
         when(userRepository.findRateByUser(testTraders.get(4))).thenReturn(4.1);
     }
 
-    @Test
-    public void getAllTradersTest() {
-        List<UserDTO> results;
-
-        results = userController.getAllTraders(4.5, 3.0, null, 1, 2);
-        assertEquals(results.size(), 2);
-    }
+//    @Test
+//    public void getAllTradersTest() {
+//        List<UserDTO> results;
+//
+//        results = userController.getAllTraders(4.5, 3.0, null, 1, 2);
+//        assertEquals(results.size(), 2);
+//    }
 
 //    @Test(expected = NotEnoughRightException.class)
 //    public void deleteUserTest() {

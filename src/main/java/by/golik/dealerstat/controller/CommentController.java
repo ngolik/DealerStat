@@ -1,21 +1,16 @@
 package by.golik.dealerstat.controller;
 
 import by.golik.dealerstat.entity.Comment;
-import by.golik.dealerstat.entity.GameObject;
 import by.golik.dealerstat.entity.User;
 import by.golik.dealerstat.service.CommentService;
 import by.golik.dealerstat.service.GameObjectService;
 import by.golik.dealerstat.service.UserService;
-import by.golik.dealerstat.service.dto.CommentDTO;
-import by.golik.dealerstat.service.util.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
-import java.security.Principal;
 import java.util.List;
 
 /**
@@ -42,12 +37,12 @@ public class CommentController {
       }
 
     /**
-     *
+     * работает нормально
      * @param comment
      * @param objectId
      * @return
      */
-    @PostMapping("objects/{objectId}/comments")
+    @PostMapping(value = "objects/{objectId}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Comment> postWithGameObject(@RequestBody Comment comment, @PathVariable Long objectId) {
         if (comment == null) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -57,10 +52,10 @@ public class CommentController {
     }
 
     /**
-     *
+     * работает нормально
      * @param id
      */
-     @PostMapping("comments/{id}/approve")
+     @PostMapping(value = "comments/{id}/approve", produces = MediaType.APPLICATION_JSON_VALUE)
      public void approveComment(@PathVariable("id") int id) {
             Comment comment = commentService.getUnconfirmedComment(id);
 
@@ -72,25 +67,25 @@ public class CommentController {
      * @param id
      * @return
      */
-    @GetMapping("comments/{id}/unapproved")
+    @GetMapping(value = "comments/{id}/unapproved", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Comment> getUnapprovedComment(@PathVariable("id") int id) {
         Comment comment = commentService.getUnconfirmedComment(id);
         return new ResponseEntity<>(comment, HttpStatus.OK);
         }
 
     /**
-     *
+     * рабюотает нормально
      * @param id
      * @return
      */
-    @GetMapping("comments/{id}")
+    @GetMapping(value = "comments/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Comment> getComment(@PathVariable("id") int id) {
         Comment comment = commentService.getComment(id);
         return new ResponseEntity<>(comment, HttpStatus.OK);
     }
 
     /**
-     *
+     * работает нормально
      * @return
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
@@ -107,43 +102,40 @@ public class CommentController {
 //    }
 
     /**
-     *
+     * работает нормально
      * @param id
      * @return
      */
      @GetMapping(value = "users/{id}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
      public ResponseEntity<List<Comment>> getAllCommentsByAuthor(@PathVariable("id") int id) {
         User user = userService.getUser(id);
-         List<Comment> commentList = commentService.getAllCommentsByAuthor(user);
-         return generateListResponse(commentList);
+        List<Comment> commentList = commentService.getAllCommentsByAuthor(user);
+        return generateListResponse(commentList);
      }
 
-     @PutMapping("comments/{id}")
-     public void updateComment(@PathVariable("id") int id,
-                                  @RequestBody @Valid CommentDTO commentDTO,
-                                  Principal principal) {
-         User user = userService.getUserByEmailAndEnabled(principal.getName());
+    /**
+     * todo нужна проверка на юзера
+     * @param comment
+     * @param id
+     * @return
+     */
+     @PutMapping(value = "comments/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+     public ResponseEntity<Comment> updateComment(@RequestBody Comment comment, @PathVariable Long id) {
+         return new ResponseEntity<>(commentService.update(comment, id));
+     }
+
+    /**
+     * работает нормально
+     * todo нужна проверка на юзера
+     * @param id
+     * @return
+     */
+     @DeleteMapping(value = "comments/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+     public ResponseEntity<Comment> deleteComment(@PathVariable("id") long id) {
          Comment comment = commentService.getUnconfirmedComment(id);
-
-            if (!user.equals(comment.getAuthor())) {
-//                throw new NotEnoughRightException("You can't rate this post");
-            }
-
-            commentService.updateComment(comment, commentDTO, userService.isAdmin(user));
+         commentService.deleteComment(comment);
+         return new ResponseEntity<>(HttpStatus.OK);
      }
-
-        @DeleteMapping("comments/{id}")
-        @ResponseStatus(HttpStatus.NO_CONTENT)
-        public void deleteComment(@PathVariable("id") int id, Principal principal) {
-            Comment comment = commentService.getUnconfirmedComment(id);
-            User user = userService.getUserByEmailAndEnabled(principal.getName());
-
-            if (!userService.isAdmin(user) && !comment.getAuthor().equals(user)) {
-//                throw new NotEnoughRightException("You can't delete this comment");
-            }
-
-            commentService.deleteComment(comment);
-        }
 
     protected ResponseEntity<List<Comment>> generateListResponse(List<Comment> comments) {
         if (comments.isEmpty()) {
