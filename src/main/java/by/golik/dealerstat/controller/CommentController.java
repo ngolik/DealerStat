@@ -26,20 +26,20 @@ import java.util.List;
 @RequestMapping("/")
 public class CommentController {
 
-        private final CommentService commentService;
+      private final CommentService commentService;
 
-        private final GameObjectService gameObjectService;
+      private final GameObjectService gameObjectService;
 
-        private final UserService userService;
+      private final UserService userService;
 
-        @Autowired
-        public CommentController(CommentService commentService,
+      @Autowired
+      public CommentController(CommentService commentService,
                                  GameObjectService gameObjectService,
                                  UserService userService) {
             this.commentService = commentService;
             this.gameObjectService = gameObjectService;
             this.userService = userService;
-        }
+      }
 
     /**
      *
@@ -60,8 +60,8 @@ public class CommentController {
      *
      * @param id
      */
-        @PostMapping("comments/{id}/approve")
-        public void approveComment(@PathVariable("id") int id) {
+     @PostMapping("comments/{id}/approve")
+     public void approveComment(@PathVariable("id") int id) {
             Comment comment = commentService.getUnconfirmedComment(id);
 
             commentService.approveComment(comment);
@@ -73,8 +73,9 @@ public class CommentController {
      * @return
      */
     @GetMapping("comments/{id}/unapproved")
-        public CommentDTO getUnapprovedComment(@PathVariable("id") int id) {
-            return Mapper.convertToCommentDTO(commentService.getUnconfirmedComment(id));
+    public ResponseEntity<Comment> getUnapprovedComment(@PathVariable("id") int id) {
+        Comment comment = commentService.getUnconfirmedComment(id);
+        return new ResponseEntity<>(comment, HttpStatus.OK);
         }
 
     /**
@@ -83,19 +84,20 @@ public class CommentController {
      * @return
      */
     @GetMapping("comments/{id}")
-        public CommentDTO getComment(@PathVariable("id") int id) {
-            return Mapper.convertToCommentDTO(commentService.getComment(id));
-        }
+    public ResponseEntity<Comment> getComment(@PathVariable("id") int id) {
+        Comment comment = commentService.getComment(id);
+        return new ResponseEntity<>(comment, HttpStatus.OK);
+    }
 
     /**
      *
      * @return
      */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-        public ResponseEntity<List<Comment>> getAllComments() {
+    public ResponseEntity<List<Comment>> getAllComments() {
         List<Comment> comments = this.commentService.getAllComments();
         return generateListResponse(comments);
-        }
+    }
 
 //    @GetMapping("objects/{id}/comments")
 //    public List<CommentDTO> getAllCommentsByGameObject(@PathVariable("id") int id) {
@@ -109,26 +111,26 @@ public class CommentController {
      * @param id
      * @return
      */
-        @GetMapping("users/{id}/comments")
-        public List<CommentDTO> getAllCommentsByAuthor(@PathVariable("id") int id) {
-            User user = userService.getUser(id);
+     @GetMapping(value = "users/{id}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
+     public ResponseEntity<List<Comment>> getAllCommentsByAuthor(@PathVariable("id") int id) {
+        User user = userService.getUser(id);
+         List<Comment> commentList = commentService.getAllCommentsByAuthor(user);
+         return generateListResponse(commentList);
+     }
 
-            return Mapper.convertToListCommentDTO(commentService.getAllCommentsByAuthor(user));
-        }
-
-        @PutMapping("comments/{id}")
-        public void updateComment(@PathVariable("id") int id,
+     @PutMapping("comments/{id}")
+     public void updateComment(@PathVariable("id") int id,
                                   @RequestBody @Valid CommentDTO commentDTO,
                                   Principal principal) {
-            User user = userService.getUserByEmailAndEnabled(principal.getName());
-            Comment comment = commentService.getUnconfirmedComment(id);
+         User user = userService.getUserByEmailAndEnabled(principal.getName());
+         Comment comment = commentService.getUnconfirmedComment(id);
 
             if (!user.equals(comment.getAuthor())) {
 //                throw new NotEnoughRightException("You can't rate this post");
             }
 
             commentService.updateComment(comment, commentDTO, userService.isAdmin(user));
-        }
+     }
 
         @DeleteMapping("comments/{id}")
         @ResponseStatus(HttpStatus.NO_CONTENT)

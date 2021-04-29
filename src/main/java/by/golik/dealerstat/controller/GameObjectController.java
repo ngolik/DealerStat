@@ -122,7 +122,7 @@ public class GameObjectController {
     }
 
     /**
-     * Нет прав (юзер д.б. равен юзеру)
+     * todo Обновление проходит(нужна проверка на юзера)
      * @param id
      * @param
      */
@@ -132,7 +132,7 @@ public class GameObjectController {
     }
 
     /**
-     * Нужны права для удаления
+     * todo Удаление проходит(нужна проверка на юзера)
      * @param id
      * @param
      */

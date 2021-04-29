@@ -145,9 +145,9 @@ public class IntegrationTest {
         assertEquals(results.size(), 2);
     }
 
-    @Test(expected = NotEnoughRightException.class)
-    public void deleteUserTest() {
-        userController.deleteUser(1, principalTrader);
-        userController.deleteUser(2, principalTrader);
-    }
+//    @Test(expected = NotEnoughRightException.class)
+//    public void deleteUserTest() {
+//        userController.deleteUser(1, principalTrader);
+//        userController.deleteUser(2, principalTrader);
+//    }
 }

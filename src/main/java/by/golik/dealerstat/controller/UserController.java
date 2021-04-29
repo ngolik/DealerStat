@@ -1,6 +1,7 @@
 package by.golik.dealerstat.controller;
 
 import by.golik.dealerstat.entity.User;
+import by.golik.dealerstat.exception.NotEnoughRightException;
 import by.golik.dealerstat.service.GameObjectService;
 import by.golik.dealerstat.service.UserService;
 import by.golik.dealerstat.service.dto.RoleDTO;
@@ -117,25 +118,25 @@ public class UserController {
 
     @PatchMapping("/{id}/change-role")
     public void changeRole(@PathVariable("id") int id,
-                           @RequestBody @Valid RoleDTO roleDTO) {
+                           @RequestBody @Valid RoleDTO roleDTO) throws NotEnoughRightException {
         User user = userService.getUser(id);
 
         if (userService.isAdmin(user)) {
-//            throw new NotEnoughRightException("You can't change role of admin!");
+            throw new NotEnoughRightException("You can't change role of admin!");
         }
         userService.changeRole(user, roleDTO.getRole());
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable("id") int id, Principal principal) {
+    public void deleteUser(@PathVariable("id") int id, Principal principal) throws NotEnoughRightException {
         User user = userService.getUser(id);
         User principalUser = userService.getUserByEmailAndEnabled(principal.getName());
 
         if (!userService.isAdmin(principalUser) && !principalUser.equals(user)) {
-//            throw new NotEnoughRightException("You can't delete this user!");
+            throw new NotEnoughRightException("You can't delete this user!");
         }
         if (userService.isAdmin(user)) {
-//            throw new NotEnoughRightException("You can't delete admin!");
+            throw new NotEnoughRightException("You can't delete admin!");
         }
         userService.deleteUser(user);
     }
