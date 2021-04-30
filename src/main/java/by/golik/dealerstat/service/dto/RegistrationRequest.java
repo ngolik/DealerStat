@@ -1,9 +1,6 @@
 package by.golik.dealerstat.service.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
@@ -13,9 +10,12 @@ import javax.validation.constraints.NotBlank;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @EqualsAndHashCode
 @ToString
 public class RegistrationRequest {
+
+
     @NotBlank(message = "email shouldn't be empty")
     @Email(message = "field email should be email")
     private String login;

@@ -9,6 +9,7 @@ import javax.persistence.*;
 import java.util.List;
 
 /**
+ * Class represents GameObject Entity
  * @author Nikita Golik
  */
 @Entity

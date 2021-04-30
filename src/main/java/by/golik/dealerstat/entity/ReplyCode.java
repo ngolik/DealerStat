@@ -10,6 +10,7 @@ import java.util.Calendar;
 import java.util.Random;
 
 /**
+ * Class represents entity of Code for recovering password
  * @author Nikita Golik
  */
 @EqualsAndHashCode

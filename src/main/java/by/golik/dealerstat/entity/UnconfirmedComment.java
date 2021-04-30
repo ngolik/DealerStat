@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 
 /**
+ * Class represents entity Unconfirmed Comment
  * @author Nikita Golik
  */
 @Getter

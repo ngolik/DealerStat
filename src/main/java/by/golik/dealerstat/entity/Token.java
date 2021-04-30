@@ -7,6 +7,7 @@ import java.util.Calendar;
 import java.util.UUID;
 
 /**
+ * Class represents Entity Token
  * @author Nikita Golik
  */
 @EqualsAndHashCode

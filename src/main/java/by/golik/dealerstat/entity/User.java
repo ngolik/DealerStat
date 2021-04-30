@@ -2,7 +2,6 @@ package by.golik.dealerstat.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,6 +18,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
+ * Class represents entity User
  * @author Nikita Golik
  */
 @Entity

@@ -1,7 +1,8 @@
 package by.golik.dealerstat.service;
 
-import by.golik.dealerstat.entity.Game;
 import by.golik.dealerstat.entity.User;
+import by.golik.dealerstat.exception.ResourceAlreadyExistException;
+import by.golik.dealerstat.exception.ResourceNotFoundException;
 import by.golik.dealerstat.service.dto.NewPasswordDTO;
 import by.golik.dealerstat.service.dto.UserDTO;
 import org.springframework.http.HttpStatus;
@@ -14,13 +15,13 @@ import java.util.Optional;
  * @author Nikita Golik
  */
 public interface UserService extends UserDetailsService {
-    void createUser(UserDTO userDTO);
-    void createCode(String email);
+    void createUser(UserDTO userDTO) throws ResourceAlreadyExistException;
+    void createCode(String email) throws ResourceNotFoundException;
     void confirmUser(String token);
     void confirmCode(NewPasswordDTO newPasswordDTO);
-    User getUser(long id);
-    User getUserByEmailAndEnabled(String email);
-    User getByEmailAndPassword(String email, String password) throws Exception;
+    User getUser(long id) throws ResourceNotFoundException;
+    User getUserByEmailAndEnabled(String email) throws ResourceNotFoundException;
+    User getByEmailAndPassword(String email, String password) throws Exception, ResourceNotFoundException;
     List<User> getAllUsers();
     List<User> getAllAnons();
     List<User> getAllTraders();

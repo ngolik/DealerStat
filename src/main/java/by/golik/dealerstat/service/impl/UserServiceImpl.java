@@ -1,6 +1,11 @@
 package by.golik.dealerstat.service.impl;
 
-import by.golik.dealerstat.entity.*;
+import by.golik.dealerstat.entity.ReplyCode;
+import by.golik.dealerstat.entity.Role;
+import by.golik.dealerstat.entity.Token;
+import by.golik.dealerstat.entity.User;
+import by.golik.dealerstat.exception.ResourceAlreadyExistException;
+import by.golik.dealerstat.exception.ResourceNotFoundException;
 import by.golik.dealerstat.repository.ReplyCodeRepository;
 import by.golik.dealerstat.repository.RoleRepository;
 import by.golik.dealerstat.repository.TokenRepository;
@@ -8,7 +13,7 @@ import by.golik.dealerstat.repository.UserRepository;
 import by.golik.dealerstat.service.UserService;
 import by.golik.dealerstat.service.dto.NewPasswordDTO;
 import by.golik.dealerstat.service.dto.UserDTO;
-import by.golik.dealerstat.service.util.Mapper;
+import by.golik.dealerstat.service.util.UserDtoAssembler;
 import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +26,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import javax.annotation.PostConstruct;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.validation.Valid;
 import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -122,29 +129,29 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(UserDTO userDTO)  {
+    public void createUser(@Valid UserDTO userDTO) throws ResourceAlreadyExistException {
         User user;
         Role role;
-        Token token;
+        Token verificationToken;
 
         if (userRepository.existsByEmail(userDTO.getEmail())) {
             log.info("User with email " + userDTO.getEmail() + " already exist!");
-//            throw new ResourceAlreadyExistException("User with this email already exist!");
+            throw new ResourceAlreadyExistException("User with this email already exist!");
         }
-        role = roleRepository.findByName("ROLE_READER");
+        role = roleRepository.findByName("ROLE_ANON");
         userDTO.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
-        user = Mapper.convertToUser(userDTO, role);
+        user = UserDtoAssembler.convertToUser(userDTO, role);
         userRepository.save(user);
-        token = new Token(user);
-        tokenRepository.save(token);
-        confirmMessage += token.getToken();
+        verificationToken = new Token(user);
+        tokenRepository.save(verificationToken);
+        confirmMessage += verificationToken.getToken();
         sendEmail(confirmSubject, confirmMessage, user.getEmail());
-//        deleteAsync(Calendar.DAY_OF_MONTH, 1);
+        deleteAsync(Calendar.DAY_OF_MONTH, 1);
         log.info("User " + user + " has been created.");
     }
 
     @Override
-    public void createCode(String email) {
+    public void createCode(String email) throws ResourceNotFoundException {
         User user;
         ReplyCode replyCode;
 
@@ -202,13 +209,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public User getUser(long id) {
+    public User getUser(long id) throws ResourceNotFoundException {
         Optional<User> optionalUser = userRepository.findByIdAndEnabledTrue(id);
         User user;
 
         if (!optionalUser.isPresent()) {
             log.info("User with id " + id + " doesn't exist!");
-//            throw new ResourceNotFoundException("User with this id doesn't exist!");
+            throw new ResourceNotFoundException("User with this id doesn't exist!");
         }
         user = optionalUser.get();
         return user;
@@ -216,26 +223,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public User getUserByEmailAndEnabled(String email) {
+    public User getUserByEmailAndEnabled(String email) throws ResourceNotFoundException {
         Optional<User> optionalUser = userRepository.findByEmailAndEnabledTrue(email);
 
         if (!optionalUser.isPresent()) {
             log.info("User with email " + email + " doesn't exist!");
-//            throw new ResourceNotFoundException(
-//                    "User with this email doesn't exist!");
+            throw new ResourceNotFoundException(
+                    "User with this email doesn't exist!");
         }
         return optionalUser.get();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public User getByEmailAndPassword(String email, String password) throws Exception {
+    public User getByEmailAndPassword(String email, String password) throws Exception, ResourceNotFoundException {
         Optional<User> optionalUser = userRepository.findByEmailAndEnabledTrue(email);
         User user;
 
         if (!optionalUser.isPresent()) {
             log.info("User with email " + email + " doesn't exist.");
-//            throw new ResourceNotFoundException("User with this email doesn't exist.");
+            throw new ResourceNotFoundException("User with this email doesn't exist.");
         }
         user = optionalUser.get();
         if (bCryptPasswordEncoder.matches(password, user.getPassword())) {
@@ -243,7 +250,7 @@ public class UserServiceImpl implements UserService {
         }
         else {
             log.info("This password is wrong!");
-            throw new Exception();
+            throw new ResourceNotFoundException("sa");
         }
     }
 

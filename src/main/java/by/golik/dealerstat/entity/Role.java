@@ -1,8 +1,6 @@
 package by.golik.dealerstat.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -12,6 +10,7 @@ import javax.persistence.*;
 import java.util.List;
 
 /**
+ * Class represents Entity Role of User
  * @author Nikita Golik
  */
 @EqualsAndHashCode

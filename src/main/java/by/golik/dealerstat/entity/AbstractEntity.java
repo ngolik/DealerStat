@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.util.Calendar;
 
 /**
+ * Prototype of Entity
  * @author Nikita Golik
  */
 @Getter

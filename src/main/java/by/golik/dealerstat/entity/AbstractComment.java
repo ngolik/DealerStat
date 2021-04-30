@@ -11,6 +11,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 
 /**
+ * Prototype of Comment Entity
  * @author Nikita Golik
  */
 @ToString(callSuper = true)

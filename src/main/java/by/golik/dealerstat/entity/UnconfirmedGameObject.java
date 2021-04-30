@@ -8,9 +8,11 @@ import javax.persistence.*;
 import java.util.List;
 
 /**
+ * Class represents entity Unconfirmed GameObject
  * @author Nikita Golik
  */
 @Getter
+@Setter
 @Entity
 @NoArgsConstructor
 public class UnconfirmedGameObject extends AbstractGameObject {

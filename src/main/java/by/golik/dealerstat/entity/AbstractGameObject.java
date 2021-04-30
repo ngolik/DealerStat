@@ -11,6 +11,7 @@ import javax.persistence.EntityListeners;
 import javax.persistence.MappedSuperclass;
 
 /**
+ * Prototype of GameObject Entity
  * @author Nikita Golik
  */
 

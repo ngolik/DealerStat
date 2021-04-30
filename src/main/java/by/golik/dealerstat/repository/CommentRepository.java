@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Nikita Golik
@@ -16,7 +17,7 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     boolean existsByAuthorAndGameobject(User author, GameObject gameobject);
 
-    List<Comment> findAllByGameobject(GameObject gameObject);
+    List<Comment> findAllByGameobject(Optional<GameObject> gameObject);
     List<Comment> findAllByAuthor(User author);
 
 }

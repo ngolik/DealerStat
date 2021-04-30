@@ -2,6 +2,7 @@ package by.golik.dealerstat.controller;
 
 import by.golik.dealerstat.entity.*;
 import by.golik.dealerstat.exception.NotEnoughRightException;
+import by.golik.dealerstat.exception.ResourceNotFoundException;
 import by.golik.dealerstat.service.GameObjectService;
 import by.golik.dealerstat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -106,7 +107,7 @@ public class GameObjectController {
      * @return
      */
     @GetMapping("/my")
-    public ResponseEntity<List<GameObject>> getAllMyGameObjects(Principal principal) {
+    public ResponseEntity<List<GameObject>> getAllMyGameObjects(Principal principal) throws ResourceNotFoundException {
         User user = userService.getUserByEmailAndEnabled(principal.getName());
         List<GameObject> gameObjects = gameObjectService.getAllMyGameObjects(user);
         return generateListResponse(gameObjects);

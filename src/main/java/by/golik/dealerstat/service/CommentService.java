@@ -7,6 +7,7 @@ import by.golik.dealerstat.service.dto.CommentDTO;
 import org.springframework.http.HttpStatus;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Nikita Golik
@@ -22,6 +23,6 @@ public interface CommentService {
     void updateComment(Comment comment, CommentDTO commentDTO, boolean admin);
     HttpStatus update(Comment comment, Long id);
     void deleteComment(Comment comment);
-    List<Comment> getAllCommentsByGameObject(GameObject gameObject);
+    List<Comment> getAllCommentsByGameObject(Optional<GameObject> gameObject);
 
 }

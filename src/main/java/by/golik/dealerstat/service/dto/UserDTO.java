@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 import java.util.Calendar;
 
 /**
@@ -19,10 +20,13 @@ import java.util.Calendar;
 @Builder
 public class UserDTO {
 
+    public static final String EMAIL_REGEX = "^[\\w-]+(\\.[\\w-]+)*@([\\w-]+\\.)+[a-zA-Z]+$";
+
     private long id;
 
     @NotBlank(message = "firstName shouldn't be empty")
-    @Pattern(regexp = "[a-zA-Zа-яА-Я]+",
+    @Size(max = 50)
+    @Pattern(regexp = "^[\\pL '-]+$",
             message = "firstName should includes only letters")
     private String firstName;
 
@@ -35,7 +39,7 @@ public class UserDTO {
     private String password;
 
     @NotBlank(message = "email shouldn't be empty")
-    @Email(message = "field email should be email")
+    @Pattern(regexp = EMAIL_REGEX)
     private String email;
 
     private Calendar createdAt;

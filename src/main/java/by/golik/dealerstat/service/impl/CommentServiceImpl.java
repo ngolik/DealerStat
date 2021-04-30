@@ -8,13 +8,13 @@ import by.golik.dealerstat.repository.CommentRepository;
 import by.golik.dealerstat.repository.UnconfirmedCommentRepository;
 import by.golik.dealerstat.service.CommentService;
 import by.golik.dealerstat.service.dto.CommentDTO;
-import by.golik.dealerstat.service.util.Mapper;
+import by.golik.dealerstat.service.util.UnconfirmedCommentDtoAssembler;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-
 import org.springframework.transaction.annotation.Transactional;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -98,7 +98,7 @@ public class CommentServiceImpl implements CommentService {
             comment.setMessage(commentDTO.getMessage());
             comment.setRate(commentDTO.getRate());
         } else {
-            UnconfirmedComment unapprovedComment = Mapper
+            UnconfirmedComment unapprovedComment = UnconfirmedCommentDtoAssembler
                     .convertToUnconfirmedComment(commentDTO, comment);
 
             unconfirmedCommentRepository.deleteByComment(comment);
@@ -127,7 +127,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Comment> getAllCommentsByGameObject(GameObject gameObject) {
+    public List<Comment> getAllCommentsByGameObject(Optional<GameObject> gameObject) {
         return commentRepository.findAllByGameobject(gameObject);
     }
 

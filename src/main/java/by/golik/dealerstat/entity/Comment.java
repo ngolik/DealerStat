@@ -9,6 +9,7 @@ import lombok.ToString;
 import javax.persistence.*;
 
 /**
+ * Class represents Comment entity
  * @author Nikita Golik
  */
 @Getter

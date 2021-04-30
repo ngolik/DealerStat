@@ -2,6 +2,8 @@ package by.golik.dealerstat.controller;
 
 import by.golik.dealerstat.config.jwt.JwtProvider;
 import by.golik.dealerstat.entity.User;
+import by.golik.dealerstat.exception.ResourceAlreadyExistException;
+import by.golik.dealerstat.exception.ResourceNotFoundException;
 import by.golik.dealerstat.service.UserService;
 import by.golik.dealerstat.service.dto.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 /**
  * @author Nikita Golik
@@ -34,7 +37,7 @@ public class RegistrationController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
-    public RegistrationResponse auth(@RequestBody @Valid RegistrationRequest request) throws Exception {
+    public RegistrationResponse auth(@RequestBody @Valid RegistrationRequest request) throws Exception, ResourceNotFoundException {
         User user = userService.getByEmailAndPassword(request.getLogin(),
                 request.getPassword());
         String token = jwtProvider.generateToken(user.getEmail());
@@ -42,16 +45,21 @@ public class RegistrationController {
         return new RegistrationResponse(token);
     }
 
+    /**
+     * Good
+     * @param userDTO
+     * @throws ResourceAlreadyExistException
+     */
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createUser(@RequestBody @Valid UserDTO userDTO) {
+    public void createUser(@RequestBody @Valid UserDTO userDTO) throws ResourceAlreadyExistException {
         userService.createUser(userDTO);
     }
 
     @PostMapping("/forgot_password")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createCode(@RequestBody @Valid EmailDTO emailDTO) {
-        userService.createCode(emailDTO.getEmail());
+    public void createCode(@RequestBody @Valid User user) throws ResourceNotFoundException {
+        userService.createCode(user.getEmail());
     }
 
     @PostMapping("/reset")

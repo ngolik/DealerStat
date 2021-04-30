@@ -2,18 +2,21 @@ package by.golik.dealerstat.controller;
 
 import by.golik.dealerstat.entity.Role;
 import by.golik.dealerstat.entity.User;
+import by.golik.dealerstat.exception.ResourceNotFoundException;
 import by.golik.dealerstat.service.GameObjectService;
 import by.golik.dealerstat.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.DecimalMax;
 import javax.validation.constraints.DecimalMin;
 import javax.validation.constraints.Min;
+import java.security.Principal;
 import java.util.List;
 
 /**
@@ -35,12 +38,18 @@ public class UserController {
 
     //todo
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> get(@PathVariable Long id) {
+    public ResponseEntity<User> get(@PathVariable Long id) throws ResourceNotFoundException {
+        Principal principal = (Principal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        User user = userService.getUser(id);
+        User principalUser = userService.getUserByEmailAndEnabled(principal.getName());
+        userService.calculateRate(user);
+
+        if (userService.isAdmin(principalUser) || principalUser.getId() == id) {
+            user.setEmail(user.getEmail());
+        }
         if (!this.userService.findByUserId(id).isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        User user = this.userService.findByUserId(id).get();
-        userService.calculateRate(user);
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -91,7 +100,7 @@ public class UserController {
 
     @PatchMapping(value = "/{id}/change-role", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<User> changeRole(@PathVariable("id") int id,
-                           @RequestBody @Valid Role role)  {
+                           @RequestBody @Valid Role role) throws ResourceNotFoundException {
         User user = userService.getUser(id);
         return new ResponseEntity<>(userService.changeRole(user, role.getName()));
     }
@@ -102,7 +111,7 @@ public class UserController {
      * @return
      */
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> deleteUser(@PathVariable("id") int id) {
+    public ResponseEntity<User> deleteUser(@PathVariable("id") int id) throws ResourceNotFoundException {
         User user = userService.getUser(id);
         userService.deleteUser(user);
         return new ResponseEntity<>(HttpStatus.OK);

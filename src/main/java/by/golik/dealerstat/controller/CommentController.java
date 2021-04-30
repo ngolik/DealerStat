@@ -1,17 +1,25 @@
 package by.golik.dealerstat.controller;
 
 import by.golik.dealerstat.entity.Comment;
+import by.golik.dealerstat.entity.GameObject;
 import by.golik.dealerstat.entity.User;
+import by.golik.dealerstat.exception.NotEnoughRightException;
+import by.golik.dealerstat.exception.ResourceNotFoundException;
 import by.golik.dealerstat.service.CommentService;
 import by.golik.dealerstat.service.GameObjectService;
 import by.golik.dealerstat.service.UserService;
+import by.golik.dealerstat.service.dto.CommentDTO;
+import by.golik.dealerstat.service.util.CommentDtoAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author Nikita Golik
@@ -43,11 +51,18 @@ public class CommentController {
      * @return
      */
     @PostMapping(value = "objects/{objectId}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> postWithGameObject(@RequestBody Comment comment, @PathVariable Long objectId) {
-        if (comment == null) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    public ResponseEntity<Comment> postWithGameObject(@PathVariable Long objectId,
+        @RequestBody @Valid CommentDTO commentDTO, Principal principal) throws ResourceNotFoundException, NotEnoughRightException {
+        User user = userService.getUserByEmailAndEnabled(principal.getName());
+        GameObject post = gameObjectService.findGameObjectById(objectId);
+        Comment comment;
+
+        if (user.equals(post.getAuthor())) {
+            throw new NotEnoughRightException("You can't rate this post");
         }
-        commentService.saveWithGameObjectId(comment, objectId);
+        comment = CommentDtoAssembler.convertToComment(commentDTO,userService.isAdmin(user),
+                user, post);
+        commentService.saveWithGameObjectId(comment, post, user);
         return new ResponseEntity<>(comment, HttpStatus.CREATED);
     }
 
@@ -94,24 +109,24 @@ public class CommentController {
         return generateListResponse(comments);
     }
 
-//    @GetMapping("objects/{id}/comments")
-//    public List<CommentDTO> getAllCommentsByGameObject(@PathVariable("id") int id) {
-//        GameObject gameObject = gameObjectService.findGameObjectById(id);
-//
-//        return Mapper.convertToListCommentDTO(commentService.getAllCommentsByGameObject(gameObject));
-//    }
+    @GetMapping("objects/{id}/comments")
+    public List<CommentDTO> getAllCommentsByGameObject(@PathVariable("id") int id) {
+        Optional<GameObject> gameObject = gameObjectService.findGameObjectById(id);
 
-    /**
-     * работает нормально
-     * @param id
-     * @return
-     */
-     @GetMapping(value = "users/{id}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
-     public ResponseEntity<List<Comment>> getAllCommentsByAuthor(@PathVariable("id") int id) {
-        User user = userService.getUser(id);
-        List<Comment> commentList = commentService.getAllCommentsByAuthor(user);
-        return generateListResponse(commentList);
-     }
+        return CommentDtoAssembler.convertToListCommentDTO(commentService.getAllCommentsByGameObject(gameObject));
+    }
+
+//    /**
+//     * работает нормально
+//     * @param id
+//     * @return
+//     */
+//     @GetMapping(value = "users/{id}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
+//     public ResponseEntity<List<Comment>> getAllCommentsByAuthor(@PathVariable("id") int id) throws ResourceNotFoundException {
+//        User user = userService.getUser(id);
+//        List<Comment> commentList = commentService.getAllCommentsByAuthor(user);
+//        return generateListResponse(commentList);
+//     }
 
     /**
      * todo нужна проверка на юзера

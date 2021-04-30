@@ -7,7 +7,7 @@ import by.golik.dealerstat.repository.UnconfirmedGameObjectRepository;
 import by.golik.dealerstat.service.GameObjectService;
 import by.golik.dealerstat.service.dto.GameDTO;
 import by.golik.dealerstat.service.dto.GameObjectDTO;
-import by.golik.dealerstat.service.util.Mapper;
+import by.golik.dealerstat.service.util.UnconfirmedGameObjectDtoAssembler;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,7 +56,7 @@ public class GameObjectServiceImpl implements GameObjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public Optional<GameObject> findGameObjectById(long id) {
+    public GameObject findGameObjectById(long id) {
         Optional<GameObject> optionalGameObject = gameObjectRepository.findByIdAndApprovedTrue(id);
         if (!optionalGameObject.isPresent()) {
             log.info("Post with " + id + " doesn't exist!");
@@ -150,7 +150,7 @@ public class GameObjectServiceImpl implements GameObjectService {
             gameObject.setStatus(Status.valueOf(gameObjectDTO.getStatus()));
             gameObject.setGames(games);
         } else {
-            UnconfirmedGameObject unconfirmedGameObject = Mapper
+            UnconfirmedGameObject unconfirmedGameObject = UnconfirmedGameObjectDtoAssembler
                     .convertToUnconfirmedGameObject(gameObjectDTO, games, gameObject);
 
             unconfirmedGameObjectRepository.deleteByGameobject(gameObject);
