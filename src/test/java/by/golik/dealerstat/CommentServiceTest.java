@@ -3,6 +3,7 @@ package by.golik.dealerstat;
 import by.golik.dealerstat.entity.Comment;
 import by.golik.dealerstat.entity.GameObject;
 import by.golik.dealerstat.entity.User;
+import by.golik.dealerstat.exception.ResourceNotFoundException;
 import by.golik.dealerstat.repository.CommentRepository;
 import by.golik.dealerstat.repository.UnconfirmedCommentRepository;
 import by.golik.dealerstat.service.dto.CommentDTO;
@@ -41,11 +42,11 @@ public class CommentServiceTest {
                 unconfirmedCommentRepository);
         testComment = Optional.of(new Comment("Message", 4,
                 true, new GameObject(), new User()));
-        when(commentRepository.findById((long) 1)).thenReturn(testComment);
+        when(commentRepository.findById(1)).thenReturn(testComment);
     }
 
     @Test
-    public void getCommentTest() {
+    public void getCommentTest() throws ResourceNotFoundException {
         Comment testComment = commentService.getComment(1);
         assertNotNull(testComment);
     }

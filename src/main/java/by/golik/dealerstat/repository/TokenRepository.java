@@ -13,7 +13,7 @@ import java.util.Optional;
  * @author Nikita Golik
  */
 @Repository
-public interface TokenRepository extends JpaRepository<Token, Long> {
+public interface TokenRepository extends JpaRepository<Token, Integer> {
     Optional<Token> findFirstByToken(String token);
 
     @Transactional

@@ -4,6 +4,8 @@ import by.golik.dealerstat.entity.Comment;
 import by.golik.dealerstat.entity.GameObject;
 import by.golik.dealerstat.entity.UnconfirmedComment;
 import by.golik.dealerstat.entity.User;
+import by.golik.dealerstat.exception.ResourceAlreadyExistException;
+import by.golik.dealerstat.exception.ResourceNotFoundException;
 import by.golik.dealerstat.repository.CommentRepository;
 import by.golik.dealerstat.repository.UnconfirmedCommentRepository;
 import by.golik.dealerstat.service.CommentService;
@@ -11,7 +13,6 @@ import by.golik.dealerstat.service.dto.CommentDTO;
 import by.golik.dealerstat.service.util.UnconfirmedCommentDtoAssembler;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,8 +38,14 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public List<Comment> getAllComments() {
-        return commentRepository.findAll();
+    public void createComment(Comment comment, GameObject gameObject, User user) throws ResourceAlreadyExistException {
+        if (commentRepository.existsByAuthorAndGameobject(user, gameObject)) {
+            log.info("Comment " + comment + " already exist!");
+            throw new ResourceAlreadyExistException(
+                    "Comment with this author and post already exist!");
+        }
+        commentRepository.save(comment);
+        log.info("Comment " + comment + " has been created.");
     }
 
     @Override
@@ -53,27 +60,28 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public Comment getComment(long id) {
+    public Comment getComment(int id) throws ResourceNotFoundException {
         Optional<Comment> optionalComment = commentRepository
-                .findById(id);
+                .findByIdAndApprovedTrue(id);
         Comment comment;
 
         if (!optionalComment.isPresent()) {
             log.info("Comment with  id " + id + " doesn't exist!");
-//            throw new ResourceNotFoundException("This comment doesn't exist!");
+            throw new ResourceNotFoundException("This comment doesn't exist!");
         }
         comment = optionalComment.get();
         return comment;
     }
 
     @Override
-    public Comment getUnconfirmedComment(long id) {
+    @Transactional(readOnly = true)
+    public Comment getUnconfirmedComment(int id) throws ResourceNotFoundException {
         Optional<Comment> optionalComment = commentRepository.findById(id);
         Comment comment;
 
         if (!optionalComment.isPresent()) {
             log.info("Comment with  id " + id + " doesn't exist!");
-//            throw new ResourceNotFoundException("This comment doesn't exist!");
+            throw new ResourceNotFoundException("This comment doesn't exist!");
         }
         comment = optionalComment.get();
         if (comment.getUnconfirmedComment() != null) {
@@ -83,6 +91,12 @@ public class CommentServiceImpl implements CommentService {
             comment.setRate(unconfirmedComment.getRate());
         }
         return comment;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Comment> getAllCommentsByGameObject(GameObject gameObject) {
+        return commentRepository.findAllByGameobject(gameObject);
     }
 
     @Override
@@ -109,30 +123,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public HttpStatus update(Comment comment, Long id) {
-        Optional<Comment> gameObjectOptional = commentRepository.findById(id);
-        if (!gameObjectOptional.isPresent()) {
-            return HttpStatus.NOT_FOUND;
-        }
-        comment.setId(id);
-        commentRepository.save(comment);
-        return HttpStatus.OK;
-    }
-
-    @Override
     public void deleteComment(Comment comment) {
         log.info("Comment " + comment + " has been deleted.");
         commentRepository.delete(comment);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<Comment> getAllCommentsByGameObject(Optional<GameObject> gameObject) {
-        return commentRepository.findAllByGameobject(gameObject);
-    }
-
-    @Override
-    public void saveWithGameObjectId(Comment comment, Long authorId) {
-
     }
 }

@@ -13,7 +13,7 @@ import java.util.Optional;
  * @author Nikita Golik
  */
 @Repository
-public interface ReplyCodeRepository extends JpaRepository<ReplyCode, Long> {
+public interface ReplyCodeRepository extends JpaRepository<ReplyCode, Integer> {
     Optional<ReplyCode> findByCode(String code);
 
     @Transactional

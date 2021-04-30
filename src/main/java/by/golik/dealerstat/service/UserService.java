@@ -19,7 +19,7 @@ public interface UserService extends UserDetailsService {
     void createCode(String email) throws ResourceNotFoundException;
     void confirmUser(String token);
     void confirmCode(NewPasswordDTO newPasswordDTO);
-    User getUser(long id) throws ResourceNotFoundException;
+    User getUser(int id) throws ResourceNotFoundException;
     User getUserByEmailAndEnabled(String email) throws ResourceNotFoundException;
     User getByEmailAndPassword(String email, String password) throws Exception, ResourceNotFoundException;
     List<User> getAllUsers();
@@ -30,7 +30,7 @@ public interface UserService extends UserDetailsService {
     HttpStatus changeRole(User user, String roleName);
     void deleteUser(User user);
     void calculateRate(User user);
-    List<User> getAllTradersByGames(List<Long> idList);
-    public Optional<User> findByUserId(Long id);
-    HttpStatus update(User user, Long id);
+    List<User> getAllTradersByGames(List<Integer> idList);
+    public Optional<User> findByUserId(int id);
+    HttpStatus update(User user, int id);
 }

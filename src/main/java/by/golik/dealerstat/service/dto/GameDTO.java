@@ -13,7 +13,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 @NoArgsConstructor
 public class GameDTO {
-    private long id;
+    private int id;
 
     @NotBlank(message = "name shouldn't be empty")
     private String name;

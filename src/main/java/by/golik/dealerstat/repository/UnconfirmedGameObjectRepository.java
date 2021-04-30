@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  * @author Nikita Golik
  */
 @Repository
-public interface UnconfirmedGameObjectRepository extends JpaRepository<UnconfirmedGameObject, Long> {
+public interface UnconfirmedGameObjectRepository extends JpaRepository<UnconfirmedGameObject, Integer> {
     void deleteByGameobject(GameObject gameobject);
 }

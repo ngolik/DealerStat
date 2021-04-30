@@ -33,15 +33,15 @@ public class GameServiceTest {
     public void init() {
         gameService = new GameServiceImpl(gameRepository);
         testGame = Optional.of(new Game("game"));
-        when(gameRepository.findById((long) 1)).thenReturn(testGame);
+        when(gameRepository.findById(1)).thenReturn(testGame);
     }
 
     @Test
     public void getGameTest() {
-        Optional<Game> ts = gameService.findByGameId((long) 1);
+        Optional<Game> ts = gameService.findByGameId(1);
 
         assertNotNull(ts);
-        gameService.findByGameId((long)2);
+        gameService.findByGameId(2);
     }
 
     @Test

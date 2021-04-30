@@ -15,7 +15,7 @@ import java.util.Optional;
  * @author Nikita Golik
  */
 @Repository
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<User, Integer> {
 
     boolean existsByRoleAndEnabledTrue(Role role);
 
@@ -23,7 +23,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Optional<User> findByEmailAndEnabledTrue(String email);
 
-    Optional<User> findByIdAndEnabledTrue(long id);
+    Optional<User> findByIdAndEnabledTrue(int id);
 
     @Query(nativeQuery = true, value = "select avg(c.rate) from mydb.user u, mydb.gameobject p, mydb.comment c " +
             "where u.id = :user and p.author_id = u.id and c.gameobject_id = p group by u.id")
@@ -42,5 +42,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
             "where u.id in(select distinct g.author_id from mydb.gameobject g where g.id \n" +
             "in(select distinct k.gameobjects_id  from mydb.gameobject_game k " +
             " where k.game_id in(:games)))")
-    List<User> findUserByGames(@Param("games") List<Long> games);
+    List<User> findUserByGames(@Param("games") List<Integer> games);
 }

@@ -12,9 +12,9 @@ import java.util.Optional;
  */
 public interface GameService {
     public Game findByName(String name);
-    public Optional<Game> findByGameId(Long id);
+    public Optional<Game> findByGameId(int id);
     public List<Game> findAllGames();
     public void saveGame(Game game);
-    public void deleteGameById(Long id);
-    HttpStatus update(Game game, Long id);
+    public void deleteGameById(int id);
+    HttpStatus update(Game game, int id);
 }

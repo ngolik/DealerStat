@@ -1,25 +1,25 @@
 package by.golik.dealerstat.controller;
 
-import by.golik.dealerstat.entity.Comment;
+import by.golik.dealerstat.entity.Game;
 import by.golik.dealerstat.entity.GameObject;
+import by.golik.dealerstat.entity.Status;
 import by.golik.dealerstat.entity.User;
 import by.golik.dealerstat.exception.NotEnoughRightException;
 import by.golik.dealerstat.exception.ResourceNotFoundException;
 import by.golik.dealerstat.service.CommentService;
 import by.golik.dealerstat.service.GameObjectService;
 import by.golik.dealerstat.service.UserService;
-import by.golik.dealerstat.service.dto.CommentDTO;
-import by.golik.dealerstat.service.util.CommentDtoAssembler;
+import by.golik.dealerstat.service.dto.GameDTO;
+import by.golik.dealerstat.service.dto.GameObjectDTO;
+import by.golik.dealerstat.service.util.GameDtoAssembler;
+import by.golik.dealerstat.service.util.GameObjectDtoAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.security.Principal;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author Nikita Golik
@@ -35,127 +35,92 @@ public class CommentController {
 
       private final UserService userService;
 
-      @Autowired
-      public CommentController(CommentService commentService,
-                                 GameObjectService gameObjectService,
-                                 UserService userService) {
-            this.commentService = commentService;
-            this.gameObjectService = gameObjectService;
-            this.userService = userService;
-      }
+    @Autowired
+    public CommentController(GameObjectService gameObjectService, UserService userService,
+                             CommentService commentService) {
+        this.gameObjectService = gameObjectService;
+        this.userService = userService;
+        this.commentService = commentService;
+    }
 
-    /**
-     * работает нормально
-     * @param comment
-     * @param objectId
-     * @return
-     */
-    @PostMapping(value = "objects/{objectId}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> postWithGameObject(@PathVariable Long objectId,
-        @RequestBody @Valid CommentDTO commentDTO, Principal principal) throws ResourceNotFoundException, NotEnoughRightException {
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public void createGameObject(@RequestBody @Valid GameObjectDTO gameObjectDTO,
+                           Principal principal) throws ResourceNotFoundException {
         User user = userService.getUserByEmailAndEnabled(principal.getName());
-        GameObject post = gameObjectService.findGameObjectById(objectId);
-        Comment comment;
+        List<Game> games = gameObjectService.getGamesByGameDTOS(gameObjectDTO.getGames());
+        GameObject gameObject = GameObjectDtoAssembler.convertToGameObject(gameObjectDTO,
+                userService.isAdmin(user), user, games);
 
-        if (user.equals(post.getAuthor())) {
-            throw new NotEnoughRightException("You can't rate this post");
-        }
-        comment = CommentDtoAssembler.convertToComment(commentDTO,userService.isAdmin(user),
-                user, post);
-        commentService.saveWithGameObjectId(comment, post, user);
-        return new ResponseEntity<>(comment, HttpStatus.CREATED);
+        gameObjectService.createGameObject(gameObject);
     }
 
-    /**
-     * работает нормально
-     * @param id
-     */
-     @PostMapping(value = "comments/{id}/approve", produces = MediaType.APPLICATION_JSON_VALUE)
-     public void approveComment(@PathVariable("id") int id) {
-            Comment comment = commentService.getUnconfirmedComment(id);
+    @PostMapping("/{id}/approve")
+    public void approveGameobject(@PathVariable("id") int id) {
+        GameObject gameObject = gameObjectService.getUnconfirmedGameObject(id);
 
-            commentService.approveComment(comment);
-        }
-
-    /**
-     *
-     * @param id
-     * @return
-     */
-    @GetMapping(value = "comments/{id}/unapproved", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> getUnapprovedComment(@PathVariable("id") int id) {
-        Comment comment = commentService.getUnconfirmedComment(id);
-        return new ResponseEntity<>(comment, HttpStatus.OK);
-        }
-
-    /**
-     * рабюотает нормально
-     * @param id
-     * @return
-     */
-    @GetMapping(value = "comments/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Comment> getComment(@PathVariable("id") int id) {
-        Comment comment = commentService.getComment(id);
-        return new ResponseEntity<>(comment, HttpStatus.OK);
+        gameObjectService.approveGameObject(gameObject);
     }
 
-    /**
-     * работает нормально
-     * @return
-     */
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<List<Comment>> getAllComments() {
-        List<Comment> comments = this.commentService.getAllComments();
-        return generateListResponse(comments);
-    }
+    @GetMapping("/{id}")
+    public GameObjectDTO getGameObject(@PathVariable("id") int id, Principal principal) throws NotEnoughRightException, ResourceNotFoundException {
+        GameObject gameObject = gameObjectService.getGameObjectById(id);
 
-    @GetMapping("objects/{id}/comments")
-    public List<CommentDTO> getAllCommentsByGameObject(@PathVariable("id") int id) {
-        Optional<GameObject> gameObject = gameObjectService.findGameObjectById(id);
-
-        return CommentDtoAssembler.convertToListCommentDTO(commentService.getAllCommentsByGameObject(gameObject));
-    }
-
-//    /**
-//     * работает нормально
-//     * @param id
-//     * @return
-//     */
-//     @GetMapping(value = "users/{id}/comments", produces = MediaType.APPLICATION_JSON_VALUE)
-//     public ResponseEntity<List<Comment>> getAllCommentsByAuthor(@PathVariable("id") int id) throws ResourceNotFoundException {
-//        User user = userService.getUser(id);
-//        List<Comment> commentList = commentService.getAllCommentsByAuthor(user);
-//        return generateListResponse(commentList);
-//     }
-
-    /**
-     * todo нужна проверка на юзера
-     * @param comment
-     * @param id
-     * @return
-     */
-     @PutMapping(value = "comments/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-     public ResponseEntity<Comment> updateComment(@RequestBody Comment comment, @PathVariable Long id) {
-         return new ResponseEntity<>(commentService.update(comment, id));
-     }
-
-    /**
-     * работает нормально
-     * todo нужна проверка на юзера
-     * @param id
-     * @return
-     */
-     @DeleteMapping(value = "comments/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-     public ResponseEntity<Comment> deleteComment(@PathVariable("id") long id) {
-         Comment comment = commentService.getUnconfirmedComment(id);
-         commentService.deleteComment(comment);
-         return new ResponseEntity<>(HttpStatus.OK);
-     }
-
-    protected ResponseEntity<List<Comment>> generateListResponse(List<Comment> comments) {
-        if (comments.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (gameObject.getStatus().equals(Status.SOLD) && principal == null) {
+            throw new NotEnoughRightException("You can't browse this post!");
         }
-        return new ResponseEntity<>(comments, HttpStatus.OK);
+        return GameObjectDtoAssembler.convertToGameObjectDTO(gameObject);
+    }
+
+    @GetMapping("/{id}/unapproved")
+    public GameObjectDTO getUnapprovedGameobject(@PathVariable("id") int id) {
+        return GameObjectDtoAssembler.convertToGameObjectDTO(gameObjectService.getUnconfirmedGameObject(id));
+    }
+
+    @GetMapping
+    public List<GameObjectDTO> getAllObjects(Principal principal) {
+        if (principal == null) {
+            return GameObjectDtoAssembler.convertToListGameObjectDTO(gameObjectService.getAllAvailableGameobjects());
+        }
+        else {
+            return GameObjectDtoAssembler.convertToListGameObjectDTO(gameObjectService.getAllGameobjects());
+        }
+    }
+
+    @GetMapping("/my")
+    public List<GameObjectDTO> getAllMyGameobjects(Principal principal) throws ResourceNotFoundException {
+        User user = userService.getUserByEmailAndEnabled(principal.getName());
+
+        return GameObjectDtoAssembler.convertToListGameObjectDTO(gameObjectService.getAllMyGameObjects(user));
+    }
+
+    @GetMapping("/games")
+    public List<GameDTO> getAllGames() {
+        return GameDtoAssembler.convertToListGameDTO(gameObjectService.getAllGames());
+    }
+
+    @PutMapping("/{id}")
+    public void updateGameobject(@PathVariable("id") int id,
+                           @RequestBody @Valid GameObjectDTO gameObjectDTO,
+                           Principal principal) throws ResourceNotFoundException, NotEnoughRightException {
+        GameObject gameObject = gameObjectService.getUnconfirmedGameObject(id);
+        User user = userService.getUserByEmailAndEnabled(principal.getName());
+
+        if (!gameObject.getAuthor().equals(user)) {
+            throw new NotEnoughRightException("You can't change this post!");
+        }
+        gameObjectService.updateGameObject(gameObject, gameObjectDTO, userService.isAdmin(user));
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteGameobject(@PathVariable("id") int id, Principal principal) throws ResourceNotFoundException, NotEnoughRightException {
+        GameObject gameObject = gameObjectService.getUnconfirmedGameObject(id);
+        User user = userService.getUserByEmailAndEnabled(principal.getName());
+
+        if (!userService.isAdmin(user) && !gameObject.getAuthor().equals(user)) {
+            throw new NotEnoughRightException("You can't delete this post!");
+        }
+        gameObjectService.deleteGameObject(gameObject);
     }
 }

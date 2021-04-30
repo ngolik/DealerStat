@@ -18,7 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class GameObjectDTO {
-    private long id;
+    private int id;
 
     @NotBlank(message = "title shouldn't be empty")
     private String title;

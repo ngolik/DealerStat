@@ -209,7 +209,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public User getUser(long id) throws ResourceNotFoundException {
+    public User getUser(int id) throws ResourceNotFoundException {
         Optional<User> optionalUser = userRepository.findByIdAndEnabledTrue(id);
         User user;
 
@@ -376,17 +376,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<User> getAllTradersByGames(List<Long> idList) {
+    public List<User> getAllTradersByGames(List<Integer> idList) {
         return userRepository.findUserByGames(idList);
     }
 
     @Override
-    public Optional<User> findByUserId(Long id) {
+    public Optional<User> findByUserId(int id) {
         return userRepository.findById(id);
     }
 
     @Override
-    public HttpStatus update(User user, Long id) {
+    public HttpStatus update(User user, int id) {
         Optional<User> userOptional = userRepository.findById(id);
         if (!userOptional.isPresent()) {
             return HttpStatus.NOT_FOUND;

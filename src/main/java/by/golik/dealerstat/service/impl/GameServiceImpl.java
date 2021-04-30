@@ -32,7 +32,7 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Optional<Game> findByGameId(Long id) {
+    public Optional<Game> findByGameId(int id) {
         return gameRepository.findById(id);
     }
 
@@ -47,12 +47,12 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public void deleteGameById(Long id) {
+    public void deleteGameById(int id) {
         gameRepository.deleteById(id);
     }
 
     @Override
-    public HttpStatus update(Game game, Long id) {
+    public HttpStatus update(Game game, int id) {
         Optional<Game> gameOptional = gameRepository.findById(id);
         if (!gameOptional.isPresent()) {
             return HttpStatus.NOT_FOUND;
@@ -61,4 +61,6 @@ public class GameServiceImpl implements GameService {
         gameRepository.save(game);
         return HttpStatus.OK;
     }
+
+
 }

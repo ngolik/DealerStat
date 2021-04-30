@@ -17,7 +17,7 @@ import java.util.Calendar;
 @NoArgsConstructor
 @Builder
 public class CommentDTO {
-    private long id;
+    private int id;
 
     private String message;
 

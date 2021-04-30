@@ -27,7 +27,7 @@ public class GameController {
 
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Game> get(@PathVariable Long id) {
+    public ResponseEntity<Game> get(@PathVariable int id) {
         if (!this.gameService.findByGameId(id).isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -53,12 +53,12 @@ public class GameController {
     }
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Game> updateGame(@RequestBody Game game, @PathVariable Long id) {
+    public ResponseEntity<Game> updateGame(@RequestBody Game game, @PathVariable int id) {
         return new ResponseEntity<>(gameService.update(game, id));
     }
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Game> delete(@PathVariable Long id) {
+    public ResponseEntity<Game> delete(@PathVariable int id) {
         gameService.deleteGameById(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }

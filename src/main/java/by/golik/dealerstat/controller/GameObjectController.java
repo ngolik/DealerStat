@@ -49,17 +49,17 @@ public class GameObjectController {
      * @param
      * @return
      */
-    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GameObject> get(@PathVariable Long id) throws NotEnoughRightException {
-        if (!this.gameObjectService.findGameObjectById(id).isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        GameObject gameObject = this.gameObjectService.findGameObjectById(id).get();
-        if (gameObject.getStatus().equals(Status.SOLD)) {
-            throw new NotEnoughRightException("You can't browse this gameobject!");
-        }
-        return new ResponseEntity<>(gameObject, HttpStatus.OK);
-    }
+//    @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<GameObject> get(@PathVariable int id) throws NotEnoughRightException, ResourceNotFoundException {
+//        if (!this.gameObjectService.getGameObjectById(id).isPresent()) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        GameObject gameObject = this.gameObjectService.getGameObjectById(id).get();
+//        if (gameObject.getStatus().equals(Status.SOLD)) {
+//            throw new NotEnoughRightException("You can't browse this gameobject!");
+//        }
+//        return new ResponseEntity<>(gameObject, HttpStatus.OK);
+//    }
 
     /**
      * Создается
@@ -82,7 +82,7 @@ public class GameObjectController {
      * @param id
      */
     @PostMapping("/{id}/approve")
-    public void approveGameObject(@PathVariable("id") long id) {
+    public void approveGameObject(@PathVariable("id") int id) {
         GameObject gameObject = gameObjectService.getUnconfirmedGameObject(id);
         gameObjectService.approveGameObject(gameObject);
     }
@@ -92,14 +92,14 @@ public class GameObjectController {
      * @param id
      * @return
      */
-    @GetMapping("/{id}/unapproved")
-    public ResponseEntity<GameObject> getUnconfirmedGameObject(@PathVariable("id") long id) {
-        if (!this.gameObjectService.findGameObjectById(id).isPresent()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        GameObject gameObject = gameObjectService.getUnconfirmedGameObject(id);
-        return new ResponseEntity<>(gameObject, HttpStatus.OK);
-    }
+//    @GetMapping("/{id}/unapproved")
+//    public ResponseEntity<GameObject> getUnconfirmedGameObject(@PathVariable("id") int id) throws ResourceNotFoundException {
+//        if (!this.gameObjectService.getGameObjectById(id).isPresent()) {
+//            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//        }
+//        GameObject gameObject = gameObjectService.getUnconfirmedGameObject(id);
+//        return new ResponseEntity<>(gameObject, HttpStatus.OK);
+//    }
 
     /**
      *
@@ -128,7 +128,7 @@ public class GameObjectController {
      * @param
      */
     @PutMapping("/{id}")
-    public ResponseEntity<GameObject> updateGameObject(@RequestBody GameObject gameObject, @PathVariable Long id) {
+    public ResponseEntity<GameObject> updateGameObject(@RequestBody GameObject gameObject, @PathVariable int id) {
         return new ResponseEntity<>(gameObjectService.update(gameObject, id));
     }
 
@@ -138,7 +138,7 @@ public class GameObjectController {
      * @param
      */
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<GameObject> deleteGameObject(@PathVariable("id") long id) {
+    public ResponseEntity<GameObject> deleteGameObject(@PathVariable("id") int id) {
         GameObject gameObject = gameObjectService.getUnconfirmedGameObject(id);
         gameObjectService.deleteGameObject(gameObject);
         return new ResponseEntity<>(HttpStatus.OK);

@@ -13,11 +13,11 @@ import java.util.Optional;
  * @author Nikita Golik
  */
 @Repository
-public interface CommentRepository extends JpaRepository<Comment, Long> {
+public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     boolean existsByAuthorAndGameobject(User author, GameObject gameobject);
-
-    List<Comment> findAllByGameobject(Optional<GameObject> gameObject);
+    Optional<Comment> findByIdAndApprovedTrue(int id);
+    List<Comment> findAllByGameobject(GameObject gameobject);
     List<Comment> findAllByAuthor(User author);
 
 }

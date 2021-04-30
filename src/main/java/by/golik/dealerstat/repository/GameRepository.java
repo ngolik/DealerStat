@@ -10,7 +10,7 @@ import java.util.Optional;
  * @author Nikita Golik
  */
 @Repository
-public interface GameRepository extends JpaRepository<Game, Long> {
+public interface GameRepository extends JpaRepository<Game, Integer> {
 
     Optional<Game> findByName(String name);
 

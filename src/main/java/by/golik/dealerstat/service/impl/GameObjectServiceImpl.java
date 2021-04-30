@@ -1,6 +1,7 @@
 package by.golik.dealerstat.service.impl;
 
 import by.golik.dealerstat.entity.*;
+import by.golik.dealerstat.exception.ResourceNotFoundException;
 import by.golik.dealerstat.repository.GameObjectRepository;
 import by.golik.dealerstat.repository.GameRepository;
 import by.golik.dealerstat.repository.UnconfirmedGameObjectRepository;
@@ -56,18 +57,19 @@ public class GameObjectServiceImpl implements GameObjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public GameObject findGameObjectById(long id) {
+    public GameObject getGameObjectById(int id) throws ResourceNotFoundException {
         Optional<GameObject> optionalGameObject = gameObjectRepository.findByIdAndApprovedTrue(id);
+
         if (!optionalGameObject.isPresent()) {
             log.info("Post with " + id + " doesn't exist!");
-//            throw new ResourceNotFoundException("This gameobject doesn't exist!");
+            throw new ResourceNotFoundException("This post doesn't exist!");
         }
-        return gameObjectRepository.findById(id);
+        return optionalGameObject.get();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public GameObject getUnconfirmedGameObject(long id) {
+    public GameObject getUnconfirmedGameObject(int id) {
         Optional<GameObject> optionalPost = gameObjectRepository.findById(id);
         GameObject gameObject;
 
@@ -161,7 +163,7 @@ public class GameObjectServiceImpl implements GameObjectService {
     }
 
     @Override
-    public HttpStatus update(GameObject gameObject, Long id) {
+    public HttpStatus update(GameObject gameObject, int id) {
         Optional<GameObject> gameObjectOptional = gameObjectRepository.findById(id);
         if (!gameObjectOptional.isPresent()) {
             return HttpStatus.NOT_FOUND;
@@ -179,8 +181,8 @@ public class GameObjectServiceImpl implements GameObjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Long> getGameIdByName(String[] names) {
-        List<Long> idList = new ArrayList<>();
+    public List<Integer> getGameIdByName(String[] names) {
+        List<Integer> idList = new ArrayList<>();
         boolean nonExist = false;
 
         for (String name: names) {
@@ -198,4 +200,17 @@ public class GameObjectServiceImpl implements GameObjectService {
             return idList;
         }
     }
+
+    @Transactional
+    @Override
+    public List<GameObject> getAllAvailableGameobjects() {
+        return gameObjectRepository.findAllByStatusIsAvailable();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<GameObject> getAllGameobjects() {
+        return gameObjectRepository.findAllByApprovedIsTrue();
+    }
+
 }

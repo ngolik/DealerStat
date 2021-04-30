@@ -22,7 +22,7 @@ public class UserDTO {
 
     public static final String EMAIL_REGEX = "^[\\w-]+(\\.[\\w-]+)*@([\\w-]+\\.)+[a-zA-Z]+$";
 
-    private long id;
+    private int id;
 
     @NotBlank(message = "firstName shouldn't be empty")
     @Size(max = 50)

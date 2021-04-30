@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  * @author Nikita Golik
  */
 @Repository
-public interface UnconfirmedCommentRepository  extends JpaRepository<UnconfirmedComment, Long> {
+public interface UnconfirmedCommentRepository  extends JpaRepository<UnconfirmedComment, Integer> {
     void deleteByComment(Comment comment);
 }

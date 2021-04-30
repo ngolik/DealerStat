@@ -38,7 +38,7 @@ public class UserController {
 
     //todo
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> get(@PathVariable Long id) throws ResourceNotFoundException {
+    public ResponseEntity<User> get(@PathVariable int id) throws ResourceNotFoundException {
         Principal principal = (Principal) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         User user = userService.getUser(id);
         User principalUser = userService.getUserByEmailAndEnabled(principal.getName());
@@ -94,7 +94,7 @@ public class UserController {
 
 
     @PutMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<User> updateGame(@RequestBody User user, @PathVariable Long id) {
+    public ResponseEntity<User> updateGame(@RequestBody User user, @PathVariable int id) {
         return new ResponseEntity<>(userService.update(user, id));
     }
 
