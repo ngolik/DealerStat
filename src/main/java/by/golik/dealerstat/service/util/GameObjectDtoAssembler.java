@@ -38,7 +38,7 @@ public class GameObjectDtoAssembler {
      * @return - value object {@link GameObjectDTO}
      */
     public static GameObjectDTO toDto(GameObject gameObject) {
-        List<GameDTO> gameDTOS = GameDtoAssembler.toDtoList(gameObject.getGames());
+        List<GameDTO> gamesDTO = GameDtoAssembler.toDtoList(gameObject.getGames());
 
         new GameObjectDTO();
         return GameObjectDTO.builder().id(gameObject.getId())
@@ -47,7 +47,7 @@ public class GameObjectDtoAssembler {
                 .authorId(gameObject.getAuthor().getId())
                 .createdAt(gameObject.getCreatedAt())
                 .updatedAt(gameObject.getUpdatedAt())
-                .games(gameDTOS).build();
+                .games(gamesDTO).build();
     }
 
     /**

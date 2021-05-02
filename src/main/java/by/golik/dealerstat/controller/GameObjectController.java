@@ -1,6 +1,9 @@
 package by.golik.dealerstat.controller;
 
-import by.golik.dealerstat.entity.*;
+import by.golik.dealerstat.entity.Game;
+import by.golik.dealerstat.entity.GameObject;
+import by.golik.dealerstat.entity.Status;
+import by.golik.dealerstat.entity.User;
 import by.golik.dealerstat.exception.NotEnoughRightException;
 import by.golik.dealerstat.exception.ResourceNotFoundException;
 import by.golik.dealerstat.service.GameObjectService;
@@ -11,7 +14,6 @@ import by.golik.dealerstat.service.util.GameDtoAssembler;
 import by.golik.dealerstat.service.util.GameObjectDtoAssembler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

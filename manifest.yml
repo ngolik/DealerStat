@@ -1,0 +1,8 @@
+applications:
+# Application
+— name: DealerStat
+instances: 1
+memory: 896M
+host: dealerstat-24-09-1993
+path: target/DealerStat.war
+buildpack: github.com/cloudfoundry/java-buildpack.git#v4.3

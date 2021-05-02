@@ -71,14 +71,14 @@ public class GameObjectServiceImpl implements GameObjectService {
     @Override
     @Transactional(readOnly = true)
     public GameObject getUnconfirmedGameObject(int id) throws ResourceNotFoundException {
-        Optional<GameObject> optionalPost = gameObjectRepository.findById(id);
+        Optional<GameObject> optionalGameObject = gameObjectRepository.findById(id);
         GameObject gameObject;
 
-        if (!optionalPost.isPresent()) {
+        if (!optionalGameObject.isPresent()) {
             log.info("GameObject with " + id + " doesn't exist!");
             throw new ResourceNotFoundException("This game object doesn't exist!");
         }
-        gameObject = optionalPost.get();
+        gameObject = optionalGameObject.get();
         if (gameObject.getUnconfirmedGameObject() != null) {
             UnconfirmedGameObject unconfirmedGameObject = gameObject.getUnconfirmedGameObject();
             List<Game> games;
@@ -110,12 +110,12 @@ public class GameObjectServiceImpl implements GameObjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Game> getGamesByGameDTO(List<GameDTO> gameDTOS) {
+    public List<Game> getGamesByGameDTO(List<GameDTO> gamesDTO) {
         List<Game> games = new ArrayList<>();
 
-        if (gameDTOS == null) return games;
-        gameDTOS = gameDTOS.stream().distinct().collect(Collectors.toList());
-        for (GameDTO gameDTO : gameDTOS) {
+        if (gamesDTO == null) return games;
+        gamesDTO = gamesDTO.stream().distinct().collect(Collectors.toList());
+        for (GameDTO gameDTO : gamesDTO) {
             Optional<Game> optionalGame = gameRepository.findByName(gameDTO.getName());
             Game game;
 
