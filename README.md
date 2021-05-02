@@ -21,10 +21,8 @@ traders in a particular category of games
 
 <p>
 <p>build: <code>package</code> Maven task
-<p>run: <code>java -jar target/market-0.1.1.jar</code>
-<p>logs: <code>logs/market.log</code>, <code>logs/market.err</code>
-<p>H2 console: <code>localhost:8080/h2-console/</code>
-<p>Swagger UI: <code>localhost:8080/swagger-ui/#/</code>
+<p>run: <code></code>
+<p>logs: <code></code>
 
 <h2>Functionality</h2>
 
