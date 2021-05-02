@@ -113,7 +113,7 @@ public class CommentServiceImpl implements CommentService {
             comment.setRate(commentDTO.getRate());
         } else {
             UnconfirmedComment unapprovedComment = UnconfirmedCommentDtoAssembler
-                    .convertToUnconfirmedComment(commentDTO, comment);
+                    .toEntity(commentDTO, comment);
 
             unconfirmedCommentRepository.deleteByComment(comment);
             unconfirmedCommentRepository.save(unapprovedComment);
@@ -126,5 +126,10 @@ public class CommentServiceImpl implements CommentService {
     public void deleteComment(Comment comment) {
         log.info("Comment " + comment + " has been deleted.");
         commentRepository.delete(comment);
+    }
+
+    @Override
+    public List<Comment> getAllComments() {
+        return commentRepository.findAll();
     }
 }

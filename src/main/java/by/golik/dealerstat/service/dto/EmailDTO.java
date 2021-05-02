@@ -8,6 +8,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 /**
+ * DTO Model for Email
  * @author Nikita Golik
  */
 @Data
@@ -15,7 +16,10 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class EmailDTO {
 
-    @NotBlank(message = "email shouldn't be empty")
-    @Email(message = "field email should be email")
+    /**
+     * Email address of {@link by.golik.dealerstat.entity.User}
+     */
+    @NotBlank
+    @Email
     private String email;
 }

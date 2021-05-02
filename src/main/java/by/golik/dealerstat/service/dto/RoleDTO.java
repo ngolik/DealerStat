@@ -8,14 +8,18 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 /**
+ * DTO Model for Role
  * @author Nikita Golik
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoleDTO {
-    @NotBlank(message = "role shouldn't be empty")
-    @Pattern(regexp = "^ROLE_TRADER$|^ROLE_ANON$",
-            message = "role should be ROLE_TRADER OR ROLE_ANON")
+
+    /**
+     * Role Of User {@link by.golik.dealerstat.entity.User}
+     */
+    @NotBlank
+    @Pattern(regexp = "^ROLE_TRADER$|^ROLE_ANON$")
     private String role;
 }

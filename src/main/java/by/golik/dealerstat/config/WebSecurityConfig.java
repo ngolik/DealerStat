@@ -45,13 +45,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .antMatchers(HttpMethod.GET, "/objects/{\\\\d+}").permitAll()
                     .antMatchers(HttpMethod.POST, "/objects")
                 .hasAnyAuthority("ROLE_ADMIN", "ROLE_TRADER")
-                .antMatchers(HttpMethod.PUT,"/objects/{\\\\d+}")
+                    .antMatchers(HttpMethod.PUT,"/objects/{\\\\d+}")
                 .hasAnyAuthority("ROLE_ADMIN", "ROLE_TRADER")
-                .antMatchers(HttpMethod.DELETE,"/objects/{\\\\d+}")
+                    .antMatchers(HttpMethod.DELETE,"/objects/{\\\\d+}")
                 .hasAnyAuthority("ROLE_ADMIN", "ROLE_TRADER")
-                .antMatchers("/objects/my","/objects/{\\\\d+}", "/objects/games")
+                    .antMatchers("/objects/my","/objects/{\\\\d+}", "/objects/games")
                 .hasAnyAuthority("ROLE_ADMIN", "ROLE_TRADER")
-                .antMatchers("/objects/{\\\\d+}/approve", "/objects/{\\\\d+}/unapproved",
+                    .antMatchers("/objects/{\\\\d+}/approve", "/objects/{\\\\d+}/unapproved",
                         "comments/{\\\\d+}/approve", "comments/{\\\\d+}/unapproved",
                         "users/{\\\\d+}/change-role")
                 .hasAnyAuthority("ROLE_ADMIN")

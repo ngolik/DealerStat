@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * Repository for Comments
  * @author Nikita Golik
  */
 @Repository

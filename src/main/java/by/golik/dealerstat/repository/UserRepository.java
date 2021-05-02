@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * Repository for users
  * @author Nikita Golik
  */
 @Repository

@@ -10,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
 /**
+ * DTO Model for New Password
  * @author Nikita Golik
  */
 @Data
@@ -17,15 +18,24 @@ import javax.validation.constraints.Size;
 @NoArgsConstructor
 public class NewPasswordDTO {
 
-    @NotBlank(message = "code shouldn't be empty")
-    @Digits(message = "code should be digit", integer = 4, fraction = 0)
-    @Size(min = 4, max = 4, message = "code should consist 4 digits")
+    /**
+     * Code for confirmation restoring password
+     */
+    @NotBlank
+    @Digits(integer = 4, fraction = 0)
+    @Size(min = 4, max = 4)
     private String code;
 
-    @NotBlank(message = "email shouldn't be empty")
-    @Email(message = "field email should be email")
+    /**
+     * Email address of User {@link by.golik.dealerstat.entity.User}
+     */
+    @NotBlank
+    @Email
     private String email;
 
-    @NotBlank(message = "newPassword shouldn't be empty")
+    /**
+     * New restored password
+     */
+    @NotBlank
     private String newPassword;
 }

@@ -7,11 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This class - Mapper for Dto Model Game
  * @author Nikita Golik
  */
 public class GameDtoAssembler {
 
-    public static List<GameDTO> convertToListGameDTO(List<Game> games) {
+    /**
+     * This method transfers list of {@link Game} to list of {@link Game}
+     * @param games - list of {@link Game}
+     * @return - list of {@link Game}
+     */
+    public static List<GameDTO> toDtoList(List<Game> games) {
         List<GameDTO> gameDTOS = new ArrayList<>();
 
         games.forEach(game ->

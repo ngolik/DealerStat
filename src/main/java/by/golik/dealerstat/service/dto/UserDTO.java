@@ -5,13 +5,13 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 import java.util.Calendar;
 
 /**
+ * DTO Model for User
  * @author Nikita Golik
  */
 @Data
@@ -20,33 +20,61 @@ import java.util.Calendar;
 @Builder
 public class UserDTO {
 
+    /**
+     * Regex For Email Validation
+     */
     public static final String EMAIL_REGEX = "^[\\w-]+(\\.[\\w-]+)*@([\\w-]+\\.)+[a-zA-Z]+$";
 
+    /**
+     * Unique identifier
+     */
     private int id;
 
-    @NotBlank(message = "firstName shouldn't be empty")
+    /**
+     * First Name of User
+     */
+    @NotBlank
     @Size(max = 50)
-    @Pattern(regexp = "^[\\pL '-]+$",
-            message = "firstName should includes only letters")
+    @Pattern(regexp = "^[\\pL '-]+$")
     private String firstName;
 
-    @NotBlank(message = "lastName shouldn't be empty")
-    @Pattern(regexp = "[a-zA-Zа-яА-Я]+",
-            message = "lastName should includes only letters")
+    /**
+     * Last Name of User
+     */
+    @NotBlank
+    @Pattern(regexp = "[a-zA-Zа-яА-Я]+")
     private String lastName;
 
-    @NotBlank(message = "password shouldn't be empty")
+    /**
+     * Password from user account
+     */
+    @NotBlank
     private String password;
 
-    @NotBlank(message = "email shouldn't be empty")
+    /**
+     * Email address of user
+     */
+    @NotBlank
     @Pattern(regexp = EMAIL_REGEX)
     private String email;
 
+    /**
+     * Date, when user account created
+     */
     private Calendar createdAt;
 
+    /**
+     * Date, when user account updated
+     */
     private Calendar updatedAt;
 
+    /**
+     * Role of user
+     */
     private String role;
 
+    /**
+     * Rate from user
+     */
     private Double rate;
 }

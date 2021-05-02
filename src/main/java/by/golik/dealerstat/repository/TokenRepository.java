@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 import java.util.Optional;
 
 /**
+ * Repository for Tokens
  * @author Nikita Golik
  */
 @Repository

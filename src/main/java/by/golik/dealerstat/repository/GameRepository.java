@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 /**
+ * Repository for Games
  * @author Nikita Golik
  */
 @Repository

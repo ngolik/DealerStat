@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
+ * Repository for Game Objects
  * @author Nikita Golik
  */
 @Repository

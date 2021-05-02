@@ -18,7 +18,7 @@ public interface UserService extends UserDetailsService {
     void createUser(UserDTO userDTO) throws ResourceAlreadyExistException;
     void createCode(String email) throws ResourceNotFoundException;
     void confirmUser(String token);
-    void confirmCode(NewPasswordDTO newPasswordDTO);
+    void confirmCode(NewPasswordDTO newPasswordDTO) throws ResourceNotFoundException;
     User getUser(int id) throws ResourceNotFoundException;
     User getUserByEmailAndEnabled(String email) throws ResourceNotFoundException;
     User getByEmailAndPassword(String email, String password) throws Exception, ResourceNotFoundException;

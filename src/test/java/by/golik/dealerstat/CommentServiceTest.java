@@ -49,6 +49,7 @@ public class CommentServiceTest {
     public void getCommentTest() throws ResourceNotFoundException {
         Comment testComment = commentService.getComment(1);
         assertNotNull(testComment);
+        commentService.getComment(2);
     }
 
     @Test

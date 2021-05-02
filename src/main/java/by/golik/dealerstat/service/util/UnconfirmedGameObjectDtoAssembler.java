@@ -9,11 +9,20 @@ import by.golik.dealerstat.service.dto.GameObjectDTO;
 import java.util.List;
 
 /**
+ * This class - mapper for Dto model Unconfirmed Game Object
  * @author Nikita Golik
  */
 public class UnconfirmedGameObjectDtoAssembler {
-    public static UnconfirmedGameObject convertToUnconfirmedGameObject(GameObjectDTO gameObjectDTO,
-                                                                       List<Game> games, GameObject gameObject) {
+
+    /**
+     * This method transfers {@link GameObjectDTO} to {@link UnconfirmedGameObject}
+     * @param gameObjectDTO - value object {@link GameObjectDTO}
+     * @param games - list of {@link Game}
+     * @param gameObject - entity model {@link GameObject}
+     * @return - entity model {@link UnconfirmedGameObject}
+     */
+    public static UnconfirmedGameObject toEntity(GameObjectDTO gameObjectDTO,
+                                                 List<Game> games, GameObject gameObject) {
         UnconfirmedGameObject unconfirmedGameObject = new UnconfirmedGameObject();
         unconfirmedGameObject.setTitle(gameObjectDTO.getTitle());
         unconfirmedGameObject.setText(gameObjectDTO.getText());

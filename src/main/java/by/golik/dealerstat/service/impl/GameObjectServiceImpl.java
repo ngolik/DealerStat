@@ -33,7 +33,9 @@ public class GameObjectServiceImpl implements GameObjectService {
     private final GameRepository gameRepository;
 
     @Autowired
-    public GameObjectServiceImpl(GameObjectRepository gameObjectRepository, UnconfirmedGameObjectRepository unconfirmedGameObjectRepository, GameRepository gameRepository) {
+    public GameObjectServiceImpl(GameObjectRepository gameObjectRepository,
+                                 UnconfirmedGameObjectRepository unconfirmedGameObjectRepository,
+                                 GameRepository gameRepository) {
         this.gameObjectRepository = gameObjectRepository;
         this.unconfirmedGameObjectRepository = unconfirmedGameObjectRepository;
         this.gameRepository = gameRepository;
@@ -153,7 +155,7 @@ public class GameObjectServiceImpl implements GameObjectService {
             gameObject.setGames(games);
         } else {
             UnconfirmedGameObject unconfirmedGameObject = UnconfirmedGameObjectDtoAssembler
-                    .convertToUnconfirmedGameObject(gameObjectDTO, games, gameObject);
+                    .toEntity(gameObjectDTO, games, gameObject);
 
             unconfirmedGameObjectRepository.deleteByGameobject(gameObject);
             unconfirmedGameObjectRepository.save(unconfirmedGameObject);

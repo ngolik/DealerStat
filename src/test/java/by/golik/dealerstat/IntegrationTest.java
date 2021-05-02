@@ -5,6 +5,7 @@ import by.golik.dealerstat.entity.GameObject;
 import by.golik.dealerstat.entity.Role;
 import by.golik.dealerstat.entity.User;
 import by.golik.dealerstat.exception.NotEnoughRightException;
+import by.golik.dealerstat.exception.ResourceNotFoundException;
 import by.golik.dealerstat.repository.*;
 import by.golik.dealerstat.service.GameObjectService;
 import by.golik.dealerstat.service.UserService;
@@ -137,17 +138,17 @@ public class IntegrationTest {
         when(userRepository.findRateByUser(testTraders.get(4))).thenReturn(4.1);
     }
 
-//    @Test
-//    public void getAllTradersTest() {
-//        List<UserDTO> results;
-//
-//        results = userController.getAllTraders(4.5, 3.0, null, 1, 2);
-//        assertEquals(results.size(), 2);
-//    }
+    @Test
+    public void getAllTradersTest() {
+        List<UserDTO> results;
 
-//    @Test(expected = NotEnoughRightException.class)
-//    public void deleteUserTest() {
-//        userController.deleteUser(1, principalTrader);
-//        userController.deleteUser(2, principalTrader);
-//    }
+        results = userController.getAllTraders(4.5, 3.0, null, 1, 2);
+        assertEquals(results.size(), 2);
+    }
+
+    @Test(expected = NotEnoughRightException.class)
+    public void deleteUserTest() throws ResourceNotFoundException, NotEnoughRightException {
+        userController.deleteUser(1, principalTrader);
+        userController.deleteUser(2, principalTrader);
+    }
 }

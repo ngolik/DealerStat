@@ -9,12 +9,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * This class - Mapper for Dto Model Comment
  * @author Nikita Golik
  */
 public class CommentDtoAssembler {
 
-    public static Comment convertToComment(CommentDTO commentDTO, boolean approved,
-                                           User user, GameObject gameObject) {
+    /**
+     * This method transfers {@link CommentDTO} to {@link Comment}
+     * @param commentDTO - value-object {@link CommentDTO}
+     * @param approved - state of comment
+     * @param user - who creates the comment {@link User}
+     * @param gameObject - game object {@link GameObject} to which a comment was made
+     * @return - Entity Object {@link Comment}
+     */
+    public static Comment toEntity(CommentDTO commentDTO, boolean approved,
+                                   User user, GameObject gameObject) {
         Comment comment = new Comment();
         comment.setMessage(commentDTO.getMessage());
         comment.setRate(commentDTO.getRate());
@@ -24,7 +33,12 @@ public class CommentDtoAssembler {
         return comment;
     }
 
-    public static CommentDTO convertToCommentDTO(Comment comment) {
+    /**
+     * This method transfers {@link Comment} to {@link CommentDTO}
+     * @param comment - Entity Object {@link Comment}
+     * @return - Value object {@link CommentDTO}
+     */
+    public static CommentDTO toDto(Comment comment) {
         new CommentDTO();
         return CommentDTO.builder().id(comment.getId())
                 .message(comment.getMessage()).rate(comment.getRate())
@@ -33,11 +47,16 @@ public class CommentDtoAssembler {
                 .gameObjectId(comment.getGameobject().getId()).build();
     }
 
-    public static List<CommentDTO> convertToListCommentDTO(List<Comment> comments) {
+    /**
+     * This method transfers list of {@link Comment} to list of {@link CommentDTO}
+     * @param comments - list of Entity {@link Comment}
+     * @return list of {@link CommentDTO}
+     */
+    public static List<CommentDTO> toDtoList(List<Comment> comments) {
         List<CommentDTO> commentDTOS = new ArrayList<>();
 
         for (Comment comment: comments) {
-            commentDTOS.add(convertToCommentDTO(comment));
+            commentDTOS.add(toDto(comment));
         }
         return commentDTOS;
     }

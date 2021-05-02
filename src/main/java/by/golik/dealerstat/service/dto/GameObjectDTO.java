@@ -11,6 +11,7 @@ import java.util.Calendar;
 import java.util.List;
 
 /**
+ * DTO Model for Game Object
  * @author Nikita Golik
  */
 @Data
@@ -18,24 +19,47 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class GameObjectDTO {
+    /**
+     * Unique identifier
+     */
     private int id;
 
-    @NotBlank(message = "title shouldn't be empty")
+    /**
+     * Text title of {@link by.golik.dealerstat.entity.GameObject}
+     */
+    @NotBlank
     private String title;
 
-    @NotBlank(message = "text shouldn't be empty")
+    /**
+     * Text with description of {@link by.golik.dealerstat.entity.GameObject}
+     */
+    @NotBlank
     private String text;
 
-    @NotBlank(message = "status shouldn't be empty")
-    @Pattern(regexp = "^AVAILABLE$|^SOLD$",
-            message = "status should be PUBLIC OR DRAFT")
+    /**
+     * Status of {@link by.golik.dealerstat.entity.GameObject}
+     */
+    @NotBlank
+    @Pattern(regexp = "^AVAILABLE$|^SOLD$")
     private String status;
 
+    /**
+     * Unique identifier of Game Object Owner {@link by.golik.dealerstat.entity.User}
+     */
     private long authorId;
 
+    /**
+     * Date when comment has been created
+     */
     private Calendar createdAt;
 
+    /**
+     * Date when comment has been updated
+     */
     private Calendar updatedAt;
 
+    /**
+     * List of @{@link by.golik.dealerstat.entity.Game}
+     */
     private List<GameDTO> games;
 }

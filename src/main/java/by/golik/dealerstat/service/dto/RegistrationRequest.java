@@ -6,6 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 /**
+ * DTO Model for Authentication data
  * @author Nikita Golik
  */
 @Data
@@ -15,11 +16,16 @@ import javax.validation.constraints.NotBlank;
 @ToString
 public class RegistrationRequest {
 
-
-    @NotBlank(message = "email shouldn't be empty")
-    @Email(message = "field email should be email")
+    /**
+     * Login (username) of User {@link by.golik.dealerstat.entity.User}
+     */
+    @NotBlank
+    @Email
     private String login;
 
-    @NotBlank(message = "password shouldn't be empty")
+    /**
+     * Password from account of User {@link by.golik.dealerstat.entity.User}
+     */
+    @NotBlank
     private String password;
 }

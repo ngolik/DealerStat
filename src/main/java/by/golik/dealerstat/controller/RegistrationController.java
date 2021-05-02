@@ -64,7 +64,7 @@ public class RegistrationController {
 
     @PostMapping("/reset")
     @ResponseStatus(HttpStatus.OK)
-    public void confirmCode(@RequestBody @Valid NewPasswordDTO newPasswordDTO) {
+    public void confirmCode(@RequestBody @Valid NewPasswordDTO newPasswordDTO) throws ResourceNotFoundException {
         userService.confirmCode(newPasswordDTO);
     }
 }

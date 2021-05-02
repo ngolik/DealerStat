@@ -140,7 +140,7 @@ public class UserServiceImpl implements UserService {
         }
         role = roleRepository.findByName("ROLE_ANON");
         userDTO.setPassword(bCryptPasswordEncoder.encode(userDTO.getPassword()));
-        user = UserDtoAssembler.convertToUser(userDTO, role);
+        user = UserDtoAssembler.toEntity(userDTO, role);
         userRepository.save(user);
         verificationToken = new Token(user);
         tokenRepository.save(verificationToken);
@@ -188,7 +188,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void confirmCode(NewPasswordDTO newPasswordDTO) {
+    public void confirmCode(NewPasswordDTO newPasswordDTO) throws ResourceNotFoundException {
         Optional<ReplyCode> optionalCode = replyCodeRepository.findByCode(
                 newPasswordDTO.getCode());
         ReplyCode replyCode;
@@ -196,7 +196,7 @@ public class UserServiceImpl implements UserService {
 
         if (!optionalCode.isPresent()) {
             log.info("Code " + newPasswordDTO.getCode() + " is wrong.");
-//            throw new ResourceNotFoundException("This code is wrong");
+            throw new ResourceNotFoundException("This code is wrong");
         }
         replyCode = optionalCode.get();
         user = replyCode.getUser();
@@ -305,14 +305,6 @@ public class UserServiceImpl implements UserService {
         log.info("User " + user + " has been deleted.");
     }
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public void calculateRating(User user) {
-//        if (!user.getRole().getName().equals("ROLE_READER")) {
-//            user.setRate(userRepository.findRateByUser(user));
-//        }
-//    }
-
     @Async
     public void deleteAsync(int period, int value) {
         TaskScheduler scheduler;
@@ -363,11 +355,11 @@ public class UserServiceImpl implements UserService {
         }
         catch (MessagingException e) {
             log.error("Email with text " + message + "wasn't sent!");
-//            throw new UnknownServerException();
         }
     }
 
     @Override
+    @Transactional
     public void calculateRate(User user) {
         if (!user.getRole().getName().equals("ROLE_ANON")) {
             user.setRate(userRepository.findRateByUser(user));

@@ -16,6 +16,7 @@ import java.util.Optional;
  * @author Nikita Golik
  */
 @Service
+
 @Transactional
 public class GameServiceImpl implements GameService {
 

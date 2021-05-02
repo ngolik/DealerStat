@@ -28,14 +28,13 @@ public class Game {
     private String name;
 
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
     @ToString.Exclude
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<GameObject> gameobjects;
 
     @ManyToMany
-    @LazyCollection(LazyCollectionOption.FALSE)
     @ToString.Exclude
-
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<UnconfirmedGameObject> unconfirmedGameObjects;
 
     public Game(String name) {

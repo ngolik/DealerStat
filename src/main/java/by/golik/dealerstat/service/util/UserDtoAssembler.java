@@ -7,14 +7,19 @@ import by.golik.dealerstat.service.dto.UserDTO;
 import java.util.ArrayList;
 import java.util.List;
 
-;
-
 /**
+ * Class- mapper for Dto model User
  * @author Nikita Golik
  */
 public class UserDtoAssembler {
 
-    public static User convertToUser(UserDTO userDTO, Role role) {
+    /**
+     * This method transfers {@link UserDTO} to {@link User}
+     * @param userDTO - value object {@link UserDTO}
+     * @param role - role of {@link User}
+     * @return - entity model {@link User}
+     */
+    public static User toEntity(UserDTO userDTO, Role role) {
         User user = new User();
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
@@ -24,7 +29,12 @@ public class UserDtoAssembler {
         return user;
     }
 
-    public static UserDTO convertToUserDTO(User user) {
+    /**
+     * This method transfers {@link User} to {@link UserDTO}
+     * @param user - entity model {@link User}
+     * @return - value object {@link UserDTO}
+     */
+    public static UserDTO toDto(User user) {
         return new UserDTO().builder().id(user.getId()).firstName(user.getFirstName())
                 .lastName(user.getLastName())
                 .createdAt(user.getCreatedAt())
@@ -32,11 +42,16 @@ public class UserDtoAssembler {
                 .role(user.getRole().getName()).rate(user.getRate()).build();
     }
 
-    public static List<UserDTO> convertToListUserDTO(List<User> users) {
+    /**
+     * This method transfers list of {@link UserDTO} to list of {@link User}
+     * @param users - list of {@link User}
+     * @return - list of value objects {@link UserDTO}
+     */
+    public static List<UserDTO> toDtoList(List<User> users) {
         List<UserDTO> userDTOS = new ArrayList<>();
 
         for (User user: users) {
-            userDTOS.add(convertToUserDTO(user));
+            userDTOS.add(toDto(user));
         }
         return userDTOS;
     }

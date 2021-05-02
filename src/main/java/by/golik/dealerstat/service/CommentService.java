@@ -20,9 +20,9 @@ public interface CommentService {
     void approveComment(Comment comment);
     Comment getComment(int id) throws ResourceNotFoundException;
     Comment getUnconfirmedComment(int id) throws ResourceNotFoundException;
+    List<Comment> getAllComments();
     List<Comment> getAllCommentsByGameObject(GameObject gameObject);
     List<Comment> getAllCommentsByAuthor(User user);
     void updateComment(Comment comment, CommentDTO commentDTO, boolean admin);
     void deleteComment(Comment comment);
-
 }
