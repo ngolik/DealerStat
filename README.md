@@ -76,7 +76,8 @@ The functionality of the Spring MVC and Spring Security frameworks has been exte
            returns a list of all comments:</p>
     
            
-<p>To create comment for chosen game object you should do POST request: <code>localhost:8080/objects/1/comments</code></p>           
+<p>To create comment for chosen game object you should do POST request: <code>localhost:8080/objects/1/comments</code></p>
+           
 ![Image alt](https://github.com/NikitaGolik/DealerStat/raw/main/src/main/webapp/WEB-INF/images/allComments.png)
 
 <p>Information about one chosen comment by id <code>http://localhost:8080/comments/2</code></p>
