@@ -31,7 +31,7 @@ public class RegistrationController {
 
     @GetMapping("/confirm/{token}")
     @ResponseStatus(HttpStatus.OK)
-    public void confirmUser(@PathVariable("token") String token) {
+    public void confirmUser(@PathVariable("token") String token) throws ResourceNotFoundException {
         userService.confirmUser(token);
     }
 

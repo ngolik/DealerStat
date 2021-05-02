@@ -168,7 +168,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void confirmUser(String token) {
+    public void confirmUser(String token) throws ResourceNotFoundException {
         Optional<Token> optionalToken =
                 tokenRepository.findFirstByToken(token);
 
@@ -183,7 +183,7 @@ public class UserServiceImpl implements UserService {
             log.info("User " + user + " has been confirmed.");
         } else {
             log.info("VerificationToken " + token + " doesn't exist!");
-//            throw new ResourceNotFoundException("This token doesn't exist!");
+            throw new ResourceNotFoundException("This token doesn't exist!");
         }
     }
 
@@ -257,9 +257,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public List<User> getAllUsers() {
-        List<User> users = userRepository.findAll();
-
-        return users;
+        return userRepository.findAll();
     }
 
     @Override
@@ -370,21 +368,5 @@ public class UserServiceImpl implements UserService {
     @Transactional(readOnly = true)
     public List<User> getAllTradersByGames(List<Integer> idList) {
         return userRepository.findUserByGames(idList);
-    }
-
-    @Override
-    public Optional<User> findByUserId(int id) {
-        return userRepository.findById(id);
-    }
-
-    @Override
-    public HttpStatus update(User user, int id) {
-        Optional<User> userOptional = userRepository.findById(id);
-        if (!userOptional.isPresent()) {
-            return HttpStatus.NOT_FOUND;
-        }
-        user.setId(id);
-        userRepository.save(user);
-        return HttpStatus.OK;
     }
 }

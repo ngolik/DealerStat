@@ -28,11 +28,6 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
-    public Game findByName(String name) {
-        return null;
-    }
-
-    @Override
     public Optional<Game> findByGameId(int id) {
         return gameRepository.findById(id);
     }

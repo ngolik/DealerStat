@@ -41,7 +41,7 @@ public class GameObjectController {
     public void createGameObject(@RequestBody @Valid GameObjectDTO gameObjectDTO,
                                  Principal principal) throws ResourceNotFoundException {
         User user = userService.getUserByEmailAndEnabled(principal.getName());
-        List<Game> games = gameObjectService.getGamesByGameDTOS(gameObjectDTO.getGames());
+        List<Game> games = gameObjectService.getGamesByGameDTO(gameObjectDTO.getGames());
         GameObject gameObject = GameObjectDtoAssembler.toEntity(gameObjectDTO,
                 userService.isAdmin(user), user, games);
 
@@ -49,7 +49,7 @@ public class GameObjectController {
     }
 
     @PostMapping("/{id}/approve")
-    public void approveGameobject(@PathVariable("id") int id) {
+    public void approveGameobject(@PathVariable("id") int id) throws ResourceNotFoundException {
         GameObject gameObject = gameObjectService.getUnconfirmedGameObject(id);
 
         gameObjectService.approveGameObject(gameObject);
@@ -74,7 +74,7 @@ public class GameObjectController {
     }
 
     @GetMapping("/{id}/unapproved")
-    public GameObjectDTO getUnapprovedGameobject(@PathVariable("id") int id) {
+    public GameObjectDTO getUnapprovedGameobject(@PathVariable("id") int id) throws ResourceNotFoundException {
         return GameObjectDtoAssembler.toDto(gameObjectService.getUnconfirmedGameObject(id));
     }
 

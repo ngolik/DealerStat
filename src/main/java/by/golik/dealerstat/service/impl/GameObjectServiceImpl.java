@@ -11,7 +11,6 @@ import by.golik.dealerstat.service.dto.GameObjectDTO;
 import by.golik.dealerstat.service.util.UnconfirmedGameObjectDtoAssembler;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -71,13 +70,13 @@ public class GameObjectServiceImpl implements GameObjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public GameObject getUnconfirmedGameObject(int id) {
+    public GameObject getUnconfirmedGameObject(int id) throws ResourceNotFoundException {
         Optional<GameObject> optionalPost = gameObjectRepository.findById(id);
         GameObject gameObject;
 
         if (!optionalPost.isPresent()) {
             log.info("GameObject with " + id + " doesn't exist!");
-//            throw new ResourceNotFoundException("This post doesn't exist!");
+            throw new ResourceNotFoundException("This game object doesn't exist!");
         }
         gameObject = optionalPost.get();
         if (gameObject.getUnconfirmedGameObject() != null) {
@@ -105,25 +104,13 @@ public class GameObjectServiceImpl implements GameObjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<GameObject> findAllGameObjects() {
-        return gameObjectRepository.findAll();
-    }
-
-//    @Override
-//    @Transactional(readOnly = true)
-//    public List<GameObject> getAllAvailableGameObjects() {
-//        return gameObjectRepository.findAllByStatusIsAvailable();
-//    }
-
-    @Override
-    @Transactional(readOnly = true)
     public List<Game> getAllGames() {
         return gameRepository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Game> getGamesByGameDTOS(List<GameDTO> gameDTOS) {
+    public List<Game> getGamesByGameDTO(List<GameDTO> gameDTOS) {
         List<Game> games = new ArrayList<>();
 
         if (gameDTOS == null) return games;
@@ -146,7 +133,7 @@ public class GameObjectServiceImpl implements GameObjectService {
 
     @Override
     public void updateGameObject(GameObject gameObject, GameObjectDTO gameObjectDTO, boolean admin) {
-        List<Game> games = getGamesByGameDTOS(gameObjectDTO.getGames());
+        List<Game> games = getGamesByGameDTO(gameObjectDTO.getGames());
 
         if (admin || !gameObject.isApproved()) {
             gameObject.setTitle(gameObjectDTO.getTitle());
@@ -162,17 +149,6 @@ public class GameObjectServiceImpl implements GameObjectService {
         }
         gameObjectRepository.save(gameObject);
         log.info("GameObject " + gameObject + " has been updated.");
-    }
-
-    @Override
-    public HttpStatus update(GameObject gameObject, int id) {
-        Optional<GameObject> gameObjectOptional = gameObjectRepository.findById(id);
-        if (!gameObjectOptional.isPresent()) {
-            return HttpStatus.NOT_FOUND;
-        }
-        gameObject.setId(id);
-        gameObjectRepository.save(gameObject);
-        return HttpStatus.OK;
     }
 
     @Override
