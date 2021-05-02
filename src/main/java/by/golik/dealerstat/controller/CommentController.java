@@ -22,6 +22,7 @@ import java.security.Principal;
 import java.util.List;
 
 /**
+ * Class-controller for comments
  * @author Nikita Golik
  */
 
@@ -42,6 +43,16 @@ public class CommentController {
         this.userService = userService;
         this.commentService = commentService;
     }
+
+    /**
+     * Creation comments
+     * @param id - unique identifier of game object
+     * @param commentDTO - value object of comment
+     * @param principal - the currently logged in user
+     * @throws ResourceNotFoundException - if object not found
+     * @throws NotEnoughRightException - if user doesn't have enough rights
+     * @throws ResourceAlreadyExistException - if comment already exists
+     */
     @PostMapping("/objects/{id}/comments")
     @ResponseStatus(HttpStatus.CREATED)
     public void createComment(@PathVariable("id") int id,
@@ -61,6 +72,11 @@ public class CommentController {
         commentService.createComment(comment, post, user);
     }
 
+    /**
+     * Confirm comment
+     * @param id - unique identifier of comment
+     * @throws ResourceNotFoundException - if comments doesn't exist
+     */
     @PostMapping("comments/{id}/approve")
     public void approveComment(@PathVariable("id") int id) throws ResourceNotFoundException {
         Comment comment = commentService.getUnconfirmedComment(id);
@@ -68,24 +84,48 @@ public class CommentController {
         commentService.approveComment(comment);
     }
 
+    /**
+     * To get Unconfirmed comments
+     * @param id - unique identifier
+     * @return - object value of comment
+     * @throws ResourceNotFoundException - if comment doesn't exist
+     */
     @GetMapping("comments/{id}/unapproved")
     public CommentDTO getUnapprovedComment(@PathVariable("id") int id) throws ResourceNotFoundException {
         return CommentDtoAssembler.toDto(commentService.getUnconfirmedComment(id));
     }
 
+    /**
+     * Get comment by Id
+     * @param id - unique identifier
+     * @return - value object of comment
+     * @throws ResourceNotFoundException - if comment doesn't exist
+     */
     @GetMapping("comments/{id}")
     public CommentDTO getComment(@PathVariable("id") int id) throws ResourceNotFoundException {
         return CommentDtoAssembler.toDto(commentService.getComment(id));
     }
 
+    /**
+     * Find all comments for game object
+     * @param id - unique identifier
+     * @return value object of list of comments
+     * @throws ResourceNotFoundException - if comment doesn't exist
+     */
     @GetMapping("objects/{id}/comments")
-    public List<CommentDTO> getAllCommentsByPost(@PathVariable("id") int id) throws ResourceNotFoundException {
+    public List<CommentDTO> getAllCommentsByGameObject(@PathVariable("id") int id) throws ResourceNotFoundException {
         GameObject gameObject = gameObjectService.getGameObjectById(id);
 
         return CommentDtoAssembler.toDtoList(commentService.
                 getAllCommentsByGameObject(gameObject));
     }
 
+    /**
+     * Find all comments by user id
+     * @param id - unique identifier
+     * @return - value object of list of comments
+     * @throws ResourceNotFoundException - if comment doesn't exist
+     */
     @GetMapping("users/{id}/comments")
     public List<CommentDTO> getAllCommentsByAuthor(@PathVariable("id") int id) throws ResourceNotFoundException {
         User user = userService.getUser(id);
@@ -93,6 +133,14 @@ public class CommentController {
         return CommentDtoAssembler.toDtoList(commentService.getAllCommentsByAuthor(user));
     }
 
+    /**
+     * Update comment by Id
+     * @param id - unique identifier
+     * @param commentDTO - value object of comment
+     * @param principal - the currently logged in user
+     * @throws ResourceNotFoundException - if comment doesn't exist
+     * @throws NotEnoughRightException - if user doesn't have enough rights
+     */
     @PutMapping("comments/{id}")
     public void updateComment(@PathVariable("id") int id,
                               @RequestBody @Valid CommentDTO commentDTO,
@@ -106,6 +154,13 @@ public class CommentController {
         commentService.updateComment(comment, commentDTO, userService.isAdmin(user));
     }
 
+    /**
+     * To delete a comment
+     * @param id - unique identifier
+     * @param principal - the currently logged in user
+     * @throws ResourceNotFoundException - if comment doesn't exist
+     * @throws NotEnoughRightException - if user doesn't have enough rights
+     */
     @DeleteMapping("comments/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteComment(@PathVariable("id") int id, Principal principal) throws ResourceNotFoundException,
@@ -119,6 +174,10 @@ public class CommentController {
         commentService.deleteComment(comment);
     }
 
+    /**
+     * To find all comments
+     * @return - list of comments
+     */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<Comment>> getAllComments() {
         List<Comment> comments = this.commentService.getAllComments();

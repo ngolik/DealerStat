@@ -36,6 +36,12 @@ public class GameObjectController {
         this.userService = userService;
     }
 
+    /**
+     * Method for creation game object
+     * @param gameObjectDTO - value object Dto of Game object
+     * @param principal - the currently logged in user
+     * @throws ResourceNotFoundException - if game object doesn't exist
+     */
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public void createGameObject(@RequestBody @Valid GameObjectDTO gameObjectDTO,
@@ -48,36 +54,52 @@ public class GameObjectController {
         gameObjectService.createGameObject(gameObject);
     }
 
+    /**
+     * Method for confirming Game Object
+     * @param id - unique identifier of Game object
+     * @throws ResourceNotFoundException - if game object doesn't exist
+     */
     @PostMapping("/{id}/approve")
-    public void approveGameobject(@PathVariable("id") int id) throws ResourceNotFoundException {
+    public void approveGameObject(@PathVariable("id") int id) throws ResourceNotFoundException {
         GameObject gameObject = gameObjectService.getUnconfirmedGameObject(id);
 
         gameObjectService.approveGameObject(gameObject);
     }
 
     /**
-     * Видны только после approve
-     * @param id
-     * @param principal
-     * @return
-     * @throws NotEnoughRightException
-     * @throws ResourceNotFoundException
+     * Method for finding Game object By id. You can see it only after confirming
+     * @param id - unique identifier of Game object
+     * @param principal - the currently logged in user
+     * @return - object value dto of Game Object
+     * @throws NotEnoughRightException - if user doesn't have enough rights
+     * @throws ResourceNotFoundException - if game object doesn't exist
      */
     @GetMapping("/{id}")
     public GameObjectDTO getGameObject(@PathVariable("id") int id, Principal principal) throws NotEnoughRightException, ResourceNotFoundException {
         GameObject gameObject = gameObjectService.getGameObjectById(id);
 
         if (gameObject.getStatus().equals(Status.SOLD) && principal == null) {
-            throw new NotEnoughRightException("You can't browse this post!");
+            throw new NotEnoughRightException("You can't browse this game object!");
         }
         return GameObjectDtoAssembler.toDto(gameObject);
     }
 
+    /**
+     * Method for finding unconfirmed Game Objects
+     * @param id - unique identifier of Game object
+     * @return - object value dto of Game Object
+     * @throws ResourceNotFoundException - if game object doesn't exist
+     */
     @GetMapping("/{id}/unapproved")
-    public GameObjectDTO getUnapprovedGameobject(@PathVariable("id") int id) throws ResourceNotFoundException {
+    public GameObjectDTO getUnapprovedGameObject(@PathVariable("id") int id) throws ResourceNotFoundException {
         return GameObjectDtoAssembler.toDto(gameObjectService.getUnconfirmedGameObject(id));
     }
 
+    /**
+     * Method to find all game objects
+     * @param principal - the currently logged in user
+     * @return - object value dto of list Game Objects
+     */
     @GetMapping
     public List<GameObjectDTO> getAllObjects(Principal principal) {
         if (principal == null) {
@@ -88,46 +110,65 @@ public class GameObjectController {
         }
     }
 
+    /**
+     * Method to find all game objects by it's owner
+     * @param principal - the currently logged in user
+     * @return - object value dto list of Game Objects
+     * @throws ResourceNotFoundException - if game object doesn't exist
+     */
     @GetMapping("/my")
-    public List<GameObjectDTO> getAllMyGameobjects(Principal principal) throws ResourceNotFoundException {
+    public List<GameObjectDTO> getAllMyGameObjects(Principal principal) throws ResourceNotFoundException {
         User user = userService.getUserByEmailAndEnabled(principal.getName());
 
         return GameObjectDtoAssembler.toDtoList(gameObjectService.getAllMyGameObjects(user));
     }
 
+    /**
+     * Method for getting a list of all games
+     * @return - object value dto list of Game Objects
+     */
     @GetMapping("/games")
     public List<GameDTO> getAllGames() {
         return GameDtoAssembler.toDtoList(gameObjectService.getAllGames());
     }
 
+    /**
+     * Method to update Game Object By it's
+     * @param id - unique identifier of Game object
+     * @param gameObjectDTO - value object Dto of Game object
+     * @param principal - the currently logged in user
+     * @throws ResourceNotFoundException - if game object doesn't exist
+     * @throws NotEnoughRightException - if user doesn't have enough rights
+     */
     @PutMapping("/{id}")
-    public void updateGameobject(@PathVariable("id") int id,
+    public void updateGameObject(@PathVariable("id") int id,
                                  @RequestBody @Valid GameObjectDTO gameObjectDTO,
                                  Principal principal) throws ResourceNotFoundException, NotEnoughRightException {
         GameObject gameObject = gameObjectService.getUnconfirmedGameObject(id);
         User user = userService.getUserByEmailAndEnabled(principal.getName());
 
         if (!gameObject.getAuthor().equals(user)) {
-            throw new NotEnoughRightException("You can't change this post!");
+            throw new NotEnoughRightException("You can't change this game object!");
         }
         gameObjectService.updateGameObject(gameObject, gameObjectDTO, userService.isAdmin(user));
     }
 
+    /**
+     * Method to delete Game Object
+     * @param id - unique identifier of Game object
+     * @param principal - the currently logged in user
+     * @throws ResourceNotFoundException - if game object doesn't exist
+     * @throws NotEnoughRightException - if user doesn't have enough rights
+     */
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteGameobject(@PathVariable("id") int id, Principal principal) throws ResourceNotFoundException, NotEnoughRightException {
+    public void deleteGameObject(@PathVariable("id") int id, Principal principal) throws ResourceNotFoundException, NotEnoughRightException {
         GameObject gameObject = gameObjectService.getUnconfirmedGameObject(id);
         User user = userService.getUserByEmailAndEnabled(principal.getName());
 
         if (!userService.isAdmin(user) && !gameObject.getAuthor().equals(user)) {
-            throw new NotEnoughRightException("You can't delete this post!");
+            throw new NotEnoughRightException("You can't delete this game object!");
         }
         gameObjectService.deleteGameObject(gameObject);
-    }
-    protected ResponseEntity<List<GameObject>> generateListResponse(List<GameObject> gameObjects) {
-        if (gameObjects.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(gameObjects, HttpStatus.OK);
     }
 }
