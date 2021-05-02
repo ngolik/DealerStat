@@ -5,7 +5,6 @@ import by.golik.dealerstat.exception.ResourceAlreadyExistException;
 import by.golik.dealerstat.exception.ResourceNotFoundException;
 import by.golik.dealerstat.service.dto.NewPasswordDTO;
 import by.golik.dealerstat.service.dto.UserDTO;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -104,9 +103,8 @@ public interface UserService extends UserDetailsService {
      * This method allows to change role of user
      * @param user - entity model of user
      * @param roleName - name of role
-     * @return - Response entity with status code
      */
-    HttpStatus changeRole(User user, String roleName);
+    void changeRole(User user, String roleName);
 
     /**
      * This method allows to delete user from system

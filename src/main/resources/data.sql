@@ -1,0 +1,11 @@
+INSERT INTO mydb.game (name) VALUES ('FIFA');
+INSERT INTO mydb.gameobject (createdAt, updatedAt, status, text, title, approved, author_id) VALUES ('2021-04-25 21:03:59.000000', '2021-04-25 21:04:04.000000', 1, 'Good object', 'Gameobject to Fifa', false, 1);
+INSERT INTO mydb.comment (createdAt, updatedAt, message, rate, approved, author_id, gameobject_id) VALUES ('2021-04-25 21:31:13.000000', '2021-04-25 21:31:15.000000', 'Good', 2, true, 1, 1);
+INSERT INTO mydb.user (createdAt, updatedAt, email, enabled, firstName, lastName, password, role_id) VALUES ('2021-04-29 11:39:51.000000', '2021-04-29 11:39:53.000000', 'dfewfwe@gmail.com', false, 'name', 'surname', 'fwe', 3);
+INSERT INTO mydb.user (createdAt, updatedAt, email, enabled, firstName, lastName, password, role_id) VALUES ('2021-04-29 11:39:08.000000', '2021-04-29 11:39:09.000000', 'gsdm@mail.ru', true, 'gwer', 'gwer', 'fwe', 2);
+INSERT INTO mydb.gameobject (createdAt, updatedAt, status, text, title, approved, author_id) VALUES ('2021-04-29 11:41:21.000000', '2021-04-29 11:41:22.000000', 1, 'Second object', 'To FIFA', false, 3);
+INSERT INTO mydb.gameobject (createdAt, updatedAt, status, text, title, approved, author_id) VALUES ('2021-04-29 11:42:20.000000', '2021-04-29 11:42:21.000000', 1, 'Another object', 'FIFA obj', true, 3);
+INSERT INTO mydb.comment (createdAt, updatedAt, message, rate, approved, author_id, gameobject_id) VALUES ('2021-04-29 11:43:03.000000', '2021-04-29 11:43:04.000000', 'Nice', 4, true, 3, 2);
+INSERT INTO mydb.gameobject_game (gameobjects_id, game_id) VALUES (3, 1);
+INSERT INTO mydb.gameobject_game (gameobjects_id, game_id) VALUES (2, 1);
+INSERT INTO mydb.gameobject_game (gameobjects_id, game_id) VALUES (1, 1);

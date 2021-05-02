@@ -62,8 +62,8 @@ public class GameObjectServiceImpl implements GameObjectService {
         Optional<GameObject> optionalGameObject = gameObjectRepository.findByIdAndApprovedTrue(id);
 
         if (!optionalGameObject.isPresent()) {
-            log.info("Post with " + id + " doesn't exist!");
-            throw new ResourceNotFoundException("This post doesn't exist!");
+            log.info("GameObject with " + id + " doesn't exist!");
+            throw new ResourceNotFoundException("This gameObject doesn't exist!");
         }
         return optionalGameObject.get();
     }

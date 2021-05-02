@@ -17,7 +17,7 @@ import java.util.Optional;
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     boolean existsByAuthorAndGameobject(User author, GameObject gameobject);
-    Optional<Comment> findByIdAndApprovedTrue(int id);
+    Optional<Comment> findByIdAndAndApprovedIsTrue(int id);
     List<Comment> findAllByGameobject(GameObject gameobject);
     List<Comment> findAllByAuthor(User author);
 

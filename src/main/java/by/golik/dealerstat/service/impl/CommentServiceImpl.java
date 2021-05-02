@@ -62,7 +62,7 @@ public class CommentServiceImpl implements CommentService {
     @Transactional(readOnly = true)
     public Comment getComment(int id) throws ResourceNotFoundException {
         Optional<Comment> optionalComment = commentRepository
-                .findByIdAndApprovedTrue(id);
+                .findById(id);
         Comment comment;
 
         if (!optionalComment.isPresent()) {

@@ -14,7 +14,7 @@ import java.util.Date;
 @Log4j2
 @Component
 public class JwtProvider {
-    @Value("$(app.jwtSecret)")
+    @Value("${jwt.secret}")
     private String jwtSecret;
 
     public String generateToken(String login) {

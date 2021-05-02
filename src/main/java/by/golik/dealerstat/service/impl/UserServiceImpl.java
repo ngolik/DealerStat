@@ -18,7 +18,6 @@ import lombok.SneakyThrows;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
@@ -236,7 +235,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public User getByEmailAndPassword(String email, String password) throws Exception, ResourceNotFoundException {
+    public User getByEmailAndPassword(String email, String password) throws ResourceNotFoundException {
         Optional<User> optionalUser = userRepository.findByEmailAndEnabledTrue(email);
         User user;
 
@@ -288,13 +287,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public HttpStatus changeRole(User user, String roleName) {
+    public void changeRole(User user, String roleName) {
         Role role = roleRepository.findByName(roleName);
 
         user.setRole(role);
         userRepository.save(user);
         log.info("Role of User " + user + " has been changed.");
-        return HttpStatus.OK;
     }
 
     @Override

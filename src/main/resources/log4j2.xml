@@ -1,31 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="warn" strict="true"
-               name="XMLConfigTest" packages="org.apache.logging.log4j.test">
-    <Filter type="ThresholdFilter" level="trace" />
+<Configuration>
+
+    <Properties>
+        <property name="AppName" value="market" />
+        <property name="LogDir" value="./logs" />
+        <property name="DefaultPattern" value="%d %-5level [%t] %c{1.} - %msg%n%throwable" />
+    </Properties>
 
     <Appenders>
-        <Console name="STDOUT">
-            <Layout type="PatternLayout" pattern="%m %n" />
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="${DefaultPattern}" />
         </Console>
-        <RollingFile name="rollingFile"
-                     fileName="src/main/resources/log/log.log"
-                     filePattern="logs/$${date:yyyy-MM}/app-%d{MM-dd-yyyy}-%i.log.gz">
-            <PatternLayout>
-                <Pattern>%d %p %c{1.} [%t] %m%n</Pattern>
-            </PatternLayout>
-            <Policies>
-                <TimeBasedTriggeringPolicy interval = "1" />
-                <SizeBasedTriggeringPolicy
-                        size="250 MB" />
-            </Policies>
-        </RollingFile>
+
+        <RandomAccessFile name="File" fileName="${LogDir}/${AppName}.log" immediateFlush="false" append="false">
+            <PatternLayout pattern="${DefaultPattern}" />
+        </RandomAccessFile>
+
+        <RandomAccessFile name="ErrorFile" fileName="${LogDir}/${AppName}.err" immediateFlush="false" append="false" >
+            <PatternLayout pattern="${DefaultPattern}" />
+        </RandomAccessFile>
     </Appenders>
 
     <Loggers>
-        <Root level="all">
-            <AppenderRef ref="rollingFile" />
-        </Root>
-    </Loggers>
+        <AsyncLogger name="market" level="trace" />
 
+        <AsyncRoot level="info">
+            <AppenderRef ref="Console" />
+            <AppenderRef ref="File" />
+            <AppenderRef ref="ErrorFile" level="warn" />
+        </AsyncRoot>
+    </Loggers>
 
 </Configuration>
