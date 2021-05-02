@@ -32,21 +32,19 @@ traders in a particular category of games
 4. Calculation of the overall top traders based on their ratings
 5. Filter by games and min-max ratings
 
-    Anonim's opportunities
-            <li>view trader's page</li>
-            <li>leaves a review</li>
-            <li>placing an order</li>
-            <li>storing in the database a shopping cart of a registered customer</li>
-        </ul>
-   
-    Trader's opportunities
-            <li>fills out a questionnaire to create his page</li>
-            <li>have game objects for sale</li>
+    Anonim's opportunities:
+            <p> <li> view trader's page</li> </p>
+            <p><li>leaves a review</li></p>
+            <p><li>placing an order</li></p>
+            <p><li>storing in the database a shopping cart of a registered customer</li></p>
+  
+    Trader's opportunities:
+            <p><li>fills out a questionnaire to create his page</li></p>
+            <p><li>have game objects for sale</li></p>
         </ul>        
-    Administator's opportunities
-        <ul>
-            <li>checks the review</li>
-            <li>checks questionnaire</li>
+    Administator's opportunities:
+            <p><li>checks the review</li></p>
+            <p><li>checks questionnaire</li></p>
         </ul>
 
 <h2>Model of database</h2>
