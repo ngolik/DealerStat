@@ -15,6 +15,11 @@ CREATE TABLE `comment`
     CONSTRAINT `FKmve6jmvinowvmroe9om9bake1` FOREIGN KEY (`author_id`) REFERENCES `user` (`id`)
 );
 
+ALTER TABLE comment ADD
+    CONSTRAINT `FKanbr11tu1qohi1uae668id3x` FOREIGN KEY (`gameobject_id`) REFERENCES `gameobject` (`id`);
+ALTER TABLE comment ADD
+    CONSTRAINT `FKmve6jmvinowvmroe9om9bake1` FOREIGN KEY (`author_id`) REFERENCES `user` (`id`);
+
 CREATE TABLE `game`
 (
     `id`   int NOT NULL AUTO_INCREMENT,
@@ -22,6 +27,8 @@ CREATE TABLE `game`
     PRIMARY KEY (`id`),
     UNIQUE KEY `UK_gdtr9fjw6icy8hhf02kpmvqpc` (`name`)
 );
+
+ALTER TABLE game ADD UNIQUE (name);
 
 CREATE TABLE `game_gameobject`
 (
@@ -32,6 +39,12 @@ CREATE TABLE `game_gameobject`
     CONSTRAINT `FK17k7i0xgdnsk9843k44n3skfe` FOREIGN KEY (`gameobjects_id`) REFERENCES `gameobject` (`id`),
     CONSTRAINT `FKt1hbfmaxsk9jrfejbv86trwvr` FOREIGN KEY (`Game_id`) REFERENCES `game` (`id`)
 );
+
+ALTER TABLE game_gameobject ADD
+    CONSTRAINT `FK17k7i0xgdnsk9843k44n3skfe` FOREIGN KEY (`gameobjects_id`) REFERENCES `gameobject` (`id`);
+ALTER TABLE game_gameobject ADD
+    CONSTRAINT `FKt1hbfmaxsk9jrfejbv86trwvr` FOREIGN KEY (`Game_id`) REFERENCES `game` (`id`);
+
 CREATE TABLE `game_unconfirmedgameobject`
 (
     `Game_id`                   int NOT NULL,
@@ -41,6 +54,12 @@ CREATE TABLE `game_unconfirmedgameobject`
     CONSTRAINT `FKc1uwsa7uc1t3s233dwe8lfgt0` FOREIGN KEY (`Game_id`) REFERENCES `game` (`id`),
     CONSTRAINT `FKsqnuq1ye15f52b34wqexay42e` FOREIGN KEY (`unconfirmedGameObjects_id`) REFERENCES `unconfirmedgameobject` (`id`)
 );
+
+ALTER TABLE game_unconfirmedgameobject ADD
+    CONSTRAINT `FKc1uwsa7uc1t3s233dwe8lfgt0` FOREIGN KEY (`Game_id`) REFERENCES `game` (`id`);
+ALTER TABLE game_unconfirmedgameobject ADD
+    CONSTRAINT `FKsqnuq1ye15f52b34wqexay42e` FOREIGN KEY (`unconfirmedGameObjects_id`) REFERENCES `unconfirmedgameobject` (`id`);
+
 CREATE TABLE `gameobject`
 (
     `id`        int          NOT NULL AUTO_INCREMENT,
@@ -55,6 +74,9 @@ CREATE TABLE `gameobject`
     KEY `FKm9kkrd5b5kxln322i35a59ilk` (`author_id`),
     CONSTRAINT `FKm9kkrd5b5kxln322i35a59ilk` FOREIGN KEY (`author_id`) REFERENCES `user` (`id`)
 );
+ALTER TABLE gameobject ADD KEY `FKm9kkrd5b5kxln322i35a59ilk` (`author_id`);
+ALTER TABLE gameobject ADD
+    CONSTRAINT `FKm9kkrd5b5kxln322i35a59ilk` FOREIGN KEY (`author_id`) REFERENCES `user` (`id`);
 
 CREATE TABLE `gameobject_game`
 (
@@ -65,6 +87,12 @@ CREATE TABLE `gameobject_game`
     CONSTRAINT `FK3lbnwexj7jlhtc6jm20gxfbru` FOREIGN KEY (`gameobjects_id`) REFERENCES `gameobject` (`id`),
     CONSTRAINT `FKt84jpo1r1sdsii8fm1mqeni8` FOREIGN KEY (`game_id`) REFERENCES `game` (`id`)
 );
+
+ALTER TABLE gameobject_game ADD
+    CONSTRAINT `FK3lbnwexj7jlhtc6jm20gxfbru` FOREIGN KEY (`gameobjects_id`) REFERENCES `gameobject` (`id`);
+ALTER TABLE gameobject_game ADD
+    CONSTRAINT `FKt84jpo1r1sdsii8fm1mqeni8` FOREIGN KEY (`game_id`) REFERENCES `game` (`id`);
+
 CREATE TABLE `replycode`
 (
     `id`         int          NOT NULL AUTO_INCREMENT,
@@ -75,12 +103,18 @@ CREATE TABLE `replycode`
     KEY `FKdu14rb6u1s2b4nyu33alug3m6` (`user_id`),
     CONSTRAINT `FKdu14rb6u1s2b4nyu33alug3m6` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 );
+
+ALTER TABLE replycode ADD
+    CONSTRAINT `FKdu14rb6u1s2b4nyu33alug3m6` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
+
 CREATE TABLE `role`
 (
     `id`   int          NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     PRIMARY KEY (`id`)
 );
+
 CREATE TABLE `token`
 (
     `id`         int          NOT NULL AUTO_INCREMENT,
@@ -91,6 +125,10 @@ CREATE TABLE `token`
     KEY `FKiiyr9nhulmfrvje08nvravy02` (`user_id`),
     CONSTRAINT `FKiiyr9nhulmfrvje08nvravy02` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
 );
+
+ALTER TABLE token ADD
+    CONSTRAINT `FKiiyr9nhulmfrvje08nvravy02` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`);
+
 CREATE TABLE `unconfirmedcomment`
 (
     `id`         int NOT NULL AUTO_INCREMENT,
@@ -103,6 +141,10 @@ CREATE TABLE `unconfirmedcomment`
     KEY `FKo5clpmdffida2u5qaq9293hsj` (`comment_id`),
     CONSTRAINT `FKo5clpmdffida2u5qaq9293hsj` FOREIGN KEY (`comment_id`) REFERENCES `comment` (`id`)
 );
+
+ALTER TABLE unconfirmedcomment ADD
+    CONSTRAINT `FKo5clpmdffida2u5qaq9293hsj` FOREIGN KEY (`comment_id`) REFERENCES `comment` (`id`);
+
 CREATE TABLE `unconfirmedgameobject`
 (
     `id`            int          NOT NULL AUTO_INCREMENT,
@@ -116,6 +158,10 @@ CREATE TABLE `unconfirmedgameobject`
     KEY `FKmx5otwe9tbah8broyhp2vvd4v` (`gameobject_id`),
     CONSTRAINT `FKmx5otwe9tbah8broyhp2vvd4v` FOREIGN KEY (`gameobject_id`) REFERENCES `gameobject` (`id`)
 );
+
+ALTER TABLE unconfirmedgameobject ADD
+    CONSTRAINT `FKmx5otwe9tbah8broyhp2vvd4v` FOREIGN KEY (`gameobject_id`) REFERENCES `gameobject` (`id`);
+
 CREATE TABLE `unconfirmedgameobject_game`
 (
     `unconfirmed_gameobject_hasid` int NOT NULL,
@@ -125,6 +171,12 @@ CREATE TABLE `unconfirmedgameobject_game`
     CONSTRAINT `FK33rg12nf345w27a95mucmq670` FOREIGN KEY (`game_id`) REFERENCES `game` (`id`),
     CONSTRAINT `FKgcodyj9f0368jbppfagqp8ytq` FOREIGN KEY (`unconfirmed_gameobject_hasid`) REFERENCES `unconfirmedgameobject` (`id`)
 );
+
+ALTER TABLE unconfirmedgameobject_game ADD
+    CONSTRAINT `FK33rg12nf345w27a95mucmq670` FOREIGN KEY (`game_id`) REFERENCES `game` (`id`);
+ALTER TABLE unconfirmedgameobject_game ADD
+    CONSTRAINT `FKgcodyj9f0368jbppfagqp8ytq` FOREIGN KEY (`unconfirmed_gameobject_hasid`) REFERENCES `unconfirmedgameobject` (`id`);
+
 CREATE TABLE `user`
 (
     `id`        int          NOT NULL AUTO_INCREMENT,
@@ -141,4 +193,8 @@ CREATE TABLE `user`
     KEY `FK84qlpfci484r1luck11eno6ec` (`role_id`),
     CONSTRAINT `FK84qlpfci484r1luck11eno6ec` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`)
 );
+ALTER TABLE user ADD unique (email);
+
+ALTER TABLE user ADD
+    CONSTRAINT `FK84qlpfci484r1luck11eno6ec` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`);
 

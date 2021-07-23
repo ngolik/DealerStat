@@ -57,6 +57,4 @@ public class GameServiceImpl implements GameService {
         gameRepository.save(game);
         return HttpStatus.OK;
     }
-
-
 }

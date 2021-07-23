@@ -18,5 +18,4 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
     boolean existsByAuthorAndGameobject(User author, GameObject gameobject);
     List<Comment> findAllByGameobject(GameObject gameobject);
     List<Comment> findAllByAuthor(User author);
-
 }

@@ -77,7 +77,6 @@ public class WebConfig implements WebMvcConfigurer {
         properties.put("spring.datasource.type", environment.getRequiredProperty("spring.datasource.type"));
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.MySQL8Dialect");
 
-
         return properties;
     }
 
